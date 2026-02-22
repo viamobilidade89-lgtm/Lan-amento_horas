@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Lançamento de Horas</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { color: #333; margin-top: 0; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; transition: 0.3s; }
+        .btn-primary { background-color: #007bff; color: white; width: 100%; font-size: 16px; }
+        .btn-primary:hover { background-color: #0056b3; }
+        .btn-secondary { background-color: #6c757d; color: white; margin-top: 10px; }
+        .hidden { display: none; }
+        .card-cadastro { border: 1px solid #e0e0e0; padding: 15px; border-radius: 5px; background: #fafafa; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Lançamento de Horas</h2>
+
+    <div id="secao-selecao">
+        <div class="form-group">
+            <label for="colaborador">Escolha o Colaborador:</label>
+            <select id="colaborador">
+                <option value="">-- Selecione --</option>
+                <option value="1">João Silva (RE: 1234)</option>
+                <option value="2">Maria Oliveira (RE: 5678)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="horas">Horas a Lançar:</label>
+            <input type="number" id="horas" placeholder="Ex: 08">
+        </div>
+
+        <button class="btn-primary" onclick="alert('Horas lançadas com sucesso!')">Lançar Horas</button>
+        
+        <hr>
+        <p style="font-size: 0.9rem;">Não encontrou o colaborador?</p>
+        <button class="btn-secondary" onclick="toggleCadastro()">+ Inserir Novo Colaborador</button>
+    </div>
+
+    <div id="secao-cadastro" class="hidden card-cadastro">
+        <h3>Novo Cadastro</h3>
+        <div class="form-group">
+            <label>Nome Completo:</label>
+            <input type="text" id="novo-nome" placeholder="Digite o nome">
+        </div>
+        <div class="form-group">
+            <label>RE:</label>
+            <input type="text" id="novo-re" placeholder="Registro do Empregado">
+        </div>
+        <div class="form-group">
+            <label>Número Pessoal:</label>
+            <input type="tel" id="novo-tel" placeholder="(00) 00000-0000">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <div class="form-group" style="flex: 1;">
+                <label>Turno:</label>
+                <input type="text" id="novo-turno" placeholder="Ex: Manhã">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Escala:</label>
+                <input type="text" id="novo-escala" placeholder="Ex: 5x2">
+            </div>
+        </div>
+        <button class="btn-primary" onclick="salvarColaborador()">Salvar e Selecionar</button>
+        <button class="btn-secondary" style="background: transparent; color: #666;" onclick="toggleCadastro()">Cancelar</button>
+    </div>
+</div>
+
+<script>
+    // Função para alternar entre seleção e cadastro
+    function toggleCadastro() {
+        const secaoSelecao = document.getElementById('secao-selecao');
+        const secaoCadastro = document.getElementById('secao-cadastro');
+        
+        secaoSelecao.classList.toggle('hidden');
+        secaoCadastro.classList.toggle('hidden');
+    }
+
+    // Função simulada para salvar o colaborador e atualizar a lista
+    function salvarColaborador() {
+        const nome = document.getElementById('novo-nome').value;
+        const re = document.getElementById('novo-re').value;
+
+        if (nome === '' || re === '') {
+            alert('Por favor, preencha o Nome e o RE.');
+            return;
+        }
+
+        // Adiciona o novo colaborador no select
+        const select = document.getElementById('colaborador');
+        const option = document.createElement('option');
+        option.text = `${nome} (RE: ${re})`;
+        option.value = re; // Usando RE como valor
+        select.add(option);
+
+        // Seleciona o novo colaborador automaticamente
+        select.value = re;
+
+        // Limpa os campos e volta para a tela inicial
+        alert('Colaborador cadastrado com sucesso!');
+        toggleCadastro();
+        limparCamposCadastro();
+    }
+
+    function limparCamposCadastro() {
+        document.getElementById('novo-nome').value = '';
+        document.getElementById('novo-re').value = '';
+        document.getElementById('novo-tel').value = '';
+        document.getElementById('novo-turno').value = '';
+        document.getElementById('novo-escala').value = '';
+    }
+</script>
+
+</body>
+</html>
