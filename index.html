@@ -3,102 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinalização - Metal SAP Pro</title>
+    <title>SAP HH Pro - B.Y.O.B. Edition</title>
     <style>
         :root { --roxo: #5E22F3; --verde: #28a745; --vermelho: #dc3545; --fundo: #f4f7f6; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); margin: 0; padding: 15px; font-size: 14px; }
         .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .secao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
-        .grid-cadastro { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 10px; }
-        
-        /* Força visual e funcional do maiúsculo */
-        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; text-transform: uppercase; }
-        select, button { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        
-        button { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; text-transform: uppercase; } /* MAIÚSCULO VISUAL */
+        button { cursor: pointer; font-weight: bold; border: none; padding: 10px; border-radius: 5px; transition: 0.2s; }
         .btn-add { background: var(--verde); color: white; }
-        .btn-primario { background: var(--roxo); color: white; width: 100%; padding: 18px; font-size: 18px; border-radius: 8px; margin-top: 10px; }
-        .btn-limpar { background: var(--vermelho); color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; }
-        .lista-scroll { max-height: 200px; overflow-y: auto; border: 1px solid #eee; margin-top: 5px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .btn-primario { background: var(--roxo); color: white; width: 100%; padding: 18px; font-size: 18px; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
-        th { background: #f8f9fa; position: sticky; top: 0; z-index: 2; }
+        .status-musica { font-size: 11px; color: #666; text-align: center; margin-bottom: 10px; }
     </style>
 </head>
-<body onclick="playMusica()">
+<body onclick="forcarPlay()">
 
-    <audio id="playerMetal" loop>
-        <source src="musica.mp3" type="audio/mpeg">
-    </audio>
+    <div class="container">
+        <div id="avisoMusica" class="status-musica">🎸 Clique em qualquer lugar para ativar o Rock Pesado</div>
 
-<div class="container">
-    <header style="text-align:center; margin-bottom:15px;">
-        <h2 style="margin:0; color:var(--roxo);">Lançamento HH - Sinalização</h2>
-        <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">ROCK PESADO ATIVADO | TUDO EM MAIÚSCULO</p>
-    </header>
+        <audio id="soadPlayer" loop preload="auto">
+            <source src="musica.mp3" type="audio/mpeg">
+        </audio>
 
-    <div class="secao">
-        <div class="grid-cadastro">
-            <input type="text" id="c-nome" placeholder="NOME COMPLETO">
-            <input type="text" id="c-re" placeholder="RE">
-            <input type="text" id="c-sap" placeholder="Nº PESSOAL (SAP)">
-            <input type="text" id="c-centro" placeholder="CENTRO">
-            <button class="btn-add" onclick="adicionarColaborador()">+ CADASTRAR</button>
+        <header style="text-align:center; margin-bottom:15px;">
+            <h2 style="margin:0; color:var(--roxo);">Lançamento HH - Sinalização</h2>
+            <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">S.O.A.D MODE | TUDO EM MAIÚSCULO</p>
+        </header>
+
+        <div class="secao">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">
+                <input type="text" id="c-nome" placeholder="NOME">
+                <input type="text" id="c-re" placeholder="RE">
+                <input type="text" id="c-sap" placeholder="SAP">
+                <input type="text" id="c-centro" placeholder="CENTRO">
+                <button class="btn-add" onclick="adicionarColaborador()">+ CADASTRAR</button>
+            </div>
+            <div style="max-height: 150px; overflow-y: auto; margin-top: 10px; border: 1px solid #eee;">
+                <table>
+                    <tbody id="corpo-equipe"></tbody>
+                </table>
+            </div>
         </div>
-        <div class="lista-scroll">
-            <table>
-                <thead><tr><th>Sel.</th><th>NOME</th><th>RE</th><th>SAP</th><th>CENTRO</th><th>X</th></tr></thead>
-                <tbody id="corpo-equipe"></tbody>
-            </table>
-        </div>
-    </div>
 
-    <div class="secao">
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <input type="number" id="num-ordem" placeholder="ORDEM SAP" style="flex: 1;">
+        <div class="secao">
+            <input type="number" id="num-ordem" placeholder="Nº ORDEM SAP" style="width: 50%;">
             <button onclick="addLinhaOp()" style="background:#444; color:white;">+ Nova Operação</button>
-        </div>
-        <table>
-            <thead><tr><th>Operação</th><th>Início</th><th>Hora</th><th>Fim</th><th>Hora</th><th>X</th></tr></thead>
-            <tbody id="corpo-operacoes"></tbody>
-        </table>
-    </div>
-
-    <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR LANÇAMENTO SAP</button>
-
-    <div class="secao" style="margin-top:15px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <strong>Planilha para Colagem ZPM</strong>
-            <button class="btn-limpar" onclick="limparPlanilhaFinal()">Limpar Tudo</button>
-        </div>
-        <div style="overflow-x: auto;">
-            <table id="tab-final">
-                <thead>
-                    <tr style="background:#eee">
-                        <th>Ordem</th><th>Oper.</th><th>SAP</th><th>Centro</th><th>Data I</th><th>Hora I</th><th>Data F</th><th>Hora F</th>
-                    </tr>
-                </thead>
-                <tbody id="corpo-final"></tbody>
+            <table>
+                <thead><tr><th>Oper.</th><th>Início</th><th>Fim</th><th>X</th></tr></thead>
+                <tbody id="corpo-operacoes"></tbody>
             </table>
         </div>
-        <button onclick="copiarFinal()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px; font-size: 16px;">📋 COPIAR E COLAR NA ZPM</button>
+
+        <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR LANÇAMENTO SAP</button>
+
+        <div class="secao" style="margin-top:15px;">
+            <div style="overflow-x: auto;">
+                <table id="tab-final">
+                    <thead><tr style="background:#eee"><th>Ordem</th><th>Op</th><th>SAP</th><th>Centro</th><th>Data I</th><th>Hora I</th><th>Data F</th><th>Hora F</th></tr></thead>
+                    <tbody id="corpo-final"></tbody>
+                </table>
+            </div>
+            <button onclick="copiarFinal()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px;">📋 COPIAR PARA O SAP</button>
+        </div>
     </div>
-</div>
 
 <script>
-    const som = document.getElementById('playerMetal');
+    const player = document.getElementById('soadPlayer');
     let tocando = false;
 
-    // Inicia o áudio no primeiro clique
-    function playMusica() {
+    // TENTATIVA BLINDADA DE PLAY
+    function forcarPlay() {
         if (!tocando) {
-            som.volume = 0.3;
-            som.play().catch(e => console.log("Verifique se musica.mp3 está na pasta."));
-            tocando = true;
+            player.volume = 0.3;
+            // O comando 'load' ajuda o navegador a encontrar o arquivo local
+            player.load();
+            let playPromise = player.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    tocando = true;
+                    document.getElementById('avisoMusica').innerText = "🤘 ROCK PESADO ATIVADO!";
+                }).catch(error => {
+                    console.log("Aguardando interação...");
+                });
+            }
         }
     }
 
-    let equipe = JSON.parse(localStorage.getItem('sap_metal_v17')) || [];
+    let equipe = JSON.parse(localStorage.getItem('sap_hh_v18')) || [];
 
     function renderizarEquipe() {
         const corpo = document.getElementById("corpo-equipe");
@@ -106,49 +100,32 @@
         equipe.forEach((p, i) => {
             corpo.innerHTML += `<tr>
                 <td><input type="checkbox" class="user-sel" value="${p.re}"></td>
-                <td style="text-align:left">${p.nome}</td>
-                <td>${p.re}</td>
-                <td style="font-family:monospace; color:var(--roxo); font-weight:bold;">${p.sap}</td>
-                <td>${p.centro}</td>
+                <td>${p.nome}</td><td>${p.re}</td><td><b>${p.sap}</b></td><td>${p.centro}</td>
                 <td><button onclick="removerColab(${i})" style="color:red; background:none;">X</button></td>
             </tr>`;
         });
-        localStorage.setItem('sap_metal_v17', JSON.stringify(equipe));
+        localStorage.setItem('sap_hh_v18', JSON.stringify(equipe));
     }
 
     function adicionarColaborador() {
-        // CONVERSÃO PARA MAIÚSCULO NO SALVAMENTO
-        const nome = document.getElementById("c-nome").value.toUpperCase().trim();
-        const re = document.getElementById("c-re").value.toUpperCase().trim();
+        const nome = document.getElementById("c-nome").value.toUpperCase();
+        const re = document.getElementById("c-re").value.toUpperCase();
         const sap = document.getElementById("c-sap").value.replace(/\D/g, "");
-        const centro = document.getElementById("c-centro").value.toUpperCase().trim();
-
-        if(!nome || !re || !sap) return alert("Preencha Nome, RE e SAP!");
-        
+        const centro = document.getElementById("c-centro").value.toUpperCase();
+        if(!nome || !re || !sap) return alert("Preencha os campos!");
         equipe.push({nome, re, sap, centro});
         ["c-nome", "c-re", "c-sap", "c-centro"].forEach(id => document.getElementById(id).value = "");
         renderizarEquipe();
     }
 
-    function removerColab(i) {
-        if(confirm("Remover da lista?")) { equipe.splice(i,1); renderizarEquipe(); limparPlanilhaFinal(); }
-    }
-
-    function limparPlanilhaFinal() { document.getElementById("corpo-final").innerHTML = ""; }
+    function removerColab(i) { equipe.splice(i,1); renderizarEquipe(); }
 
     function addLinhaOp() {
-        const ordem = document.getElementById("num-ordem").value;
         const hoje = new Date().toISOString().split('T')[0];
-        document.getElementById("corpo-operacoes").innerHTML += `<tr class="row-op" data-ordem="${ordem}">
-            <td><select class="s-op">
-                <option value="0010">0010</option><option value="0020">0020</option>
-                <option value="0030">0030</option><option value="0040">0040</option>
-                <option value="0050">0050</option><option value="0060">0060</option>
-            </select></td>
-            <td><input type="date" class="di" value="${hoje}"></td>
-            <td><input type="time" class="hi" value="07:00"></td>
-            <td><input type="date" class="df" value="${hoje}"></td>
-            <td><input type="time" class="hf" value="17:00"></td>
+        document.getElementById("corpo-operacoes").innerHTML += `<tr class="row-op" data-ordem="${document.getElementById("num-ordem").value}">
+            <td><select class="s-op"><option value="0010">0010</option><option value="0020">0020</option></select></td>
+            <td><input type="date" class="di" value="${hoje}"><input type="time" class="hi" value="07:00"></td>
+            <td><input type="date" class="df" value="${hoje}"><input type="time" class="hf" value="17:00"></td>
             <td><button onclick="this.closest('tr').remove()" style="color:red; background:none;">X</button></td>
         </tr>`;
     }
@@ -157,7 +134,6 @@
         const selecionados = document.querySelectorAll(".user-sel:checked");
         const ops = document.querySelectorAll(".row-op");
         const corpo = document.getElementById("corpo-final");
-        if(!selecionados.length || !ops.length) return alert("Selecione colaboradores e operações!");
         corpo.innerHTML = "";
         selecionados.forEach(sel => {
             const p = equipe.find(col => col.re === sel.value);
@@ -165,36 +141,25 @@
                 const dI = op.querySelector(".di").value.split("-").reverse().join(".");
                 const dF = op.querySelector(".df").value.split("-").reverse().join(".");
                 corpo.innerHTML += `<tr>
-                    <td>${op.dataset.ordem}</td>
-                    <td>${op.querySelector(".s-op").value}</td>
-                    <td>${p.sap}</td>
-                    <td>${p.centro}</td>
-                    <td>${dI}</td>
-                    <td>${op.querySelector(".hi").value}:00</td>
-                    <td>${dF}</td>
-                    <td>${op.querySelector(".hf").value}:00</td>
+                    <td>${op.dataset.ordem}</td><td>${op.querySelector(".s-op").value}</td>
+                    <td>${p.sap}</td><td>${p.centro}</td><td>${dI}</td><td>${op.querySelector(".hi").value}:00</td>
+                    <td>${dF}</td><td>${op.querySelector(".hf").value}:00</td>
                 </tr>`;
             });
         });
     }
 
     function copiarFinal() {
-        const rows = document.querySelectorAll("#corpo-final tr");
-        if(!rows.length) return alert("Gere a tabela primeiro!");
         let txt = "";
-        rows.forEach(r => {
+        document.querySelectorAll("#corpo-final tr").forEach(r => {
             const td = r.querySelectorAll("td");
-            // Tabulação exata para ZPM SAP (Ordem, Op, saltos, Centro, SAP, Datas/Horas)
-            txt += td[0].innerText.trim() + "\t" + td[1].innerText.trim() + "\t\t\t\t\t\t\t\t" + 
-                   td[3].innerText.trim() + "\t" + td[2].innerText.trim() + "\t" + 
-                   td[4].innerText.trim() + "\t" + td[5].innerText.trim() + "\t" + 
-                   td[6].innerText.trim() + "\t" + td[7].innerText.trim() + "\n";
+            txt += `${td[0].innerText}\t${td[1].innerText}\t\t\t\t\t\t\t\t${td[3].innerText}\t${td[2].innerText}\t${td[4].innerText}\t${td[5].innerText}\t${td[6].innerText}\t${td[7].innerText}\n`;
         });
         const area = document.createElement("textarea");
         area.value = txt; document.body.appendChild(area);
         area.select(); document.execCommand('copy');
         document.body.removeChild(area);
-        alert("Copiado! Pronto para o SAP.");
+        alert("Copiado!");
     }
 
     window.onload = renderizarEquipe;
