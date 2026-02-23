@@ -3,108 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAP HH Pro - B.Y.O.B. Edition</title>
+    <title>SAP HH - Sistema de Sinalização</title>
     <style>
         :root { --roxo: #5E22F3; --verde: #28a745; --vermelho: #dc3545; --fundo: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); margin: 0; padding: 15px; font-size: 14px; }
-        .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .secao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
-        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; text-transform: uppercase; } /* MAIÚSCULO VISUAL */
-        button { cursor: pointer; font-weight: bold; border: none; padding: 10px; border-radius: 5px; transition: 0.2s; }
-        .btn-add { background: var(--verde); color: white; }
-        .btn-primario { background: var(--roxo); color: white; width: 100%; padding: 18px; font-size: 18px; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--fundo); margin: 0; padding: 15px; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .secao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; text-transform: uppercase; width: 100%; box-sizing: border-box; }
+        button { cursor: pointer; font-weight: bold; border: none; padding: 12px; border-radius: 5px; transition: 0.2s; }
+        .btn-add { background: var(--verde); color: white; width: 100%; }
+        .btn-primario { background: var(--roxo); color: white; width: 100%; padding: 18px; font-size: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
         th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
-        .status-musica { font-size: 11px; color: #666; text-align: center; margin-bottom: 10px; }
+        .status-som { font-size: 12px; color: #555; text-align: center; margin-bottom: 10px; font-weight: bold; }
     </style>
 </head>
-<body onclick="forcarPlay()">
+<body onclick="ativarAudio()">
 
     <div class="container">
-        <div id="avisoMusica" class="status-musica">🎸 Clique em qualquer lugar para ativar o Rock Pesado</div>
+        <div id="msgSom" class="status-som">🎵 Clique em qualquer lugar para carregar o Rock!</div>
 
-        <audio id="soadPlayer" loop preload="auto">
+        <audio id="meuAudio" loop preload="auto">
             <source src="musica.mp3" type="audio/mpeg">
         </audio>
 
-        <header style="text-align:center; margin-bottom:15px;">
+        <header style="text-align:center; margin-bottom:20px;">
             <h2 style="margin:0; color:var(--roxo);">Lançamento HH - Sinalização</h2>
-            <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">S.O.A.D MODE | TUDO EM MAIÚSCULO</p>
+            <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">PADRÃO ZPM | TUDO EM MAIÚSCULO</p>
         </header>
 
         <div class="secao">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">
-                <input type="text" id="c-nome" placeholder="NOME">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                <input type="text" id="c-nome" placeholder="NOME DO COLABORADOR">
                 <input type="text" id="c-re" placeholder="RE">
-                <input type="text" id="c-sap" placeholder="SAP">
+                <input type="text" id="c-sap" placeholder="Nº PESSOAL (SAP)">
                 <input type="text" id="c-centro" placeholder="CENTRO">
                 <button class="btn-add" onclick="adicionarColaborador()">+ CADASTRAR</button>
             </div>
-            <div style="max-height: 150px; overflow-y: auto; margin-top: 10px; border: 1px solid #eee;">
+            <div style="max-height: 150px; overflow-y: auto; margin-top: 10px;">
                 <table>
-                    <tbody id="corpo-equipe"></tbody>
+                    <tbody id="lista-equipe"></tbody>
                 </table>
             </div>
         </div>
 
         <div class="secao">
-            <input type="number" id="num-ordem" placeholder="Nº ORDEM SAP" style="width: 50%;">
-            <button onclick="addLinhaOp()" style="background:#444; color:white;">+ Nova Operação</button>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="num-ordem" placeholder="Nº DA ORDEM SAP" style="flex: 2;">
+                <button onclick="addOp()" style="background:#444; color:white; flex: 1;">+ Adicionar Operação</button>
+            </div>
             <table>
-                <thead><tr><th>Oper.</th><th>Início</th><th>Fim</th><th>X</th></tr></thead>
-                <tbody id="corpo-operacoes"></tbody>
+                <thead><tr style="background:#f9f9f9"><th>Op</th><th>Início</th><th>Fim</th><th>X</th></tr></thead>
+                <tbody id="lista-ops"></tbody>
             </table>
         </div>
 
-        <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR LANÇAMENTO SAP</button>
+        <button class="btn-primario" onclick="processar()">🚀 GERAR DADOS PARA O SAP</button>
 
-        <div class="secao" style="margin-top:15px;">
+        <div class="secao" style="margin-top:20px;">
             <div style="overflow-x: auto;">
-                <table id="tab-final">
+                <table id="tabela-final">
                     <thead><tr style="background:#eee"><th>Ordem</th><th>Op</th><th>SAP</th><th>Centro</th><th>Data I</th><th>Hora I</th><th>Data F</th><th>Hora F</th></tr></thead>
                     <tbody id="corpo-final"></tbody>
                 </table>
             </div>
-            <button onclick="copiarFinal()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px;">📋 COPIAR PARA O SAP</button>
+            <button onclick="copiar()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px;">📋 COPIAR PARA COLAR NO SAP</button>
         </div>
     </div>
 
 <script>
-    const player = document.getElementById('soadPlayer');
+    const player = document.getElementById('meuAudio');
     let tocando = false;
 
-    // TENTATIVA BLINDADA DE PLAY
-    function forcarPlay() {
+    // Função de áudio atualizada para máxima compatibilidade
+    function ativarAudio() {
         if (!tocando) {
-            player.volume = 0.3;
-            // O comando 'load' ajuda o navegador a encontrar o arquivo local
-            player.load();
+            player.volume = 0.4;
+            player.load(); // Força o navegador a buscar o arquivo novamente
             let playPromise = player.play();
 
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
                     tocando = true;
-                    document.getElementById('avisoMusica').innerText = "🤘 ROCK PESADO ATIVADO!";
-                }).catch(error => {
+                    document.getElementById('msgSom').innerText = "🤘 ROCK ATIVADO!";
+                    document.getElementById('msgSom').style.color = "green";
+                }).catch(e => {
                     console.log("Aguardando interação...");
                 });
             }
         }
     }
 
-    let equipe = JSON.parse(localStorage.getItem('sap_hh_v18')) || [];
+    let equipe = JSON.parse(localStorage.getItem('sap_hh_v19')) || [];
 
-    function renderizarEquipe() {
-        const corpo = document.getElementById("corpo-equipe");
+    function atualizarEquipe() {
+        const corpo = document.getElementById("lista-equipe");
         corpo.innerHTML = "";
         equipe.forEach((p, i) => {
             corpo.innerHTML += `<tr>
-                <td><input type="checkbox" class="user-sel" value="${p.re}"></td>
+                <td><input type="checkbox" class="sel-user" value="${p.re}"></td>
                 <td>${p.nome}</td><td>${p.re}</td><td><b>${p.sap}</b></td><td>${p.centro}</td>
                 <td><button onclick="removerColab(${i})" style="color:red; background:none;">X</button></td>
             </tr>`;
         });
-        localStorage.setItem('sap_hh_v18', JSON.stringify(equipe));
+        localStorage.setItem('sap_hh_v19', JSON.stringify(equipe));
     }
 
     function adicionarColaborador() {
@@ -112,27 +114,29 @@
         const re = document.getElementById("c-re").value.toUpperCase();
         const sap = document.getElementById("c-sap").value.replace(/\D/g, "");
         const centro = document.getElementById("c-centro").value.toUpperCase();
-        if(!nome || !re || !sap) return alert("Preencha os campos!");
+        if(!nome || !re || !sap) return alert("Preencha os campos obrigatórios!");
         equipe.push({nome, re, sap, centro});
         ["c-nome", "c-re", "c-sap", "c-centro"].forEach(id => document.getElementById(id).value = "");
-        renderizarEquipe();
+        atualizarEquipe();
     }
 
-    function removerColab(i) { equipe.splice(i,1); renderizarEquipe(); }
+    function removerColab(i) { equipe.splice(i,1); atualizarEquipe(); }
 
-    function addLinhaOp() {
+    function addOp() {
         const hoje = new Date().toISOString().split('T')[0];
-        document.getElementById("corpo-operacoes").innerHTML += `<tr class="row-op" data-ordem="${document.getElementById("num-ordem").value}">
-            <td><select class="s-op"><option value="0010">0010</option><option value="0020">0020</option></select></td>
+        const ordem = document.getElementById("num-ordem").value;
+        if(!ordem) return alert("Digite o número da ordem primeiro!");
+        document.getElementById("lista-ops").innerHTML += `<tr class="linha-op" data-ordem="${ordem}">
+            <td><select class="s-op"><option value="0010">0010</option><option value="0020">0020</option><option value="0030">0030</option></select></td>
             <td><input type="date" class="di" value="${hoje}"><input type="time" class="hi" value="07:00"></td>
             <td><input type="date" class="df" value="${hoje}"><input type="time" class="hf" value="17:00"></td>
             <td><button onclick="this.closest('tr').remove()" style="color:red; background:none;">X</button></td>
         </tr>`;
     }
 
-    function gerarTabelaFinal() {
-        const selecionados = document.querySelectorAll(".user-sel:checked");
-        const ops = document.querySelectorAll(".row-op");
+    function processar() {
+        const selecionados = document.querySelectorAll(".sel-user:checked");
+        const ops = document.querySelectorAll(".linha-op");
         const corpo = document.getElementById("corpo-final");
         corpo.innerHTML = "";
         selecionados.forEach(sel => {
@@ -149,7 +153,7 @@
         });
     }
 
-    function copiarFinal() {
+    function copiar() {
         let txt = "";
         document.querySelectorAll("#corpo-final tr").forEach(r => {
             const td = r.querySelectorAll("td");
@@ -159,10 +163,10 @@
         area.value = txt; document.body.appendChild(area);
         area.select(); document.execCommand('copy');
         document.body.removeChild(area);
-        alert("Copiado!");
+        alert("Dados copiados para o SAP!");
     }
 
-    window.onload = renderizarEquipe;
+    window.onload = atualizarEquipe;
 </script>
 </body>
 </html>
