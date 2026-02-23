@@ -3,110 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZPM HH Pro - Guitar Edition</title>
+    <title>ZPM HH - HEAVY METAL EDITION</title>
     <style>
         :root { 
-            --roxo: #5E22F3; 
-            --verde: #28a745; 
-            --vermelho: #dc3545; 
-            --fundo: #f4f7f6; 
-            --cinza: #666;
+            --roxo: #4b0082; 
+            --verde: #1e7e34; 
+            --vermelho: #bd2130; 
+            --fundo: #ffffff; 
+            --borda: #333;
         }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); margin: 0; padding: 15px; font-size: 14px; color: #333; }
-        .container { max-width: 1100px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .secao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
+        body { font-family: 'Arial Black', Gadget, sans-serif; background: #e0e0e0; margin: 0; padding: 15px; font-size: 14px; color: #000; }
+        .container { max-width: 1100px; margin: auto; background: var(--fundo); padding: 25px; border-radius: 5px; border: 3px solid var(--borda); box-shadow: 10px 10px 0px #000; }
+        .secao { border: 2px solid #ccc; padding: 15px; border-radius: 0; margin-bottom: 15px; background: #fff; }
         
-        header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--roxo); padding-bottom: 10px; }
-        h2 { margin: 0; color: var(--roxo); text-transform: uppercase; }
+        header { text-align: center; margin-bottom: 20px; border-bottom: 4px solid #000; padding-bottom: 10px; }
+        h2 { margin: 0; color: #000; text-transform: uppercase; letter-spacing: -1px; }
         
         .grid-cadastro { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
-        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; text-transform: uppercase; font-size: 13px; }
-        button { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; border-radius: 5px; }
+        input { padding: 12px; border: 2px solid #000; border-radius: 0; text-transform: uppercase; font-weight: bold; }
+        button { cursor: pointer; font-weight: bold; border: 2px solid #000; transition: 0.1s; border-radius: 0; text-transform: uppercase; }
+        button:active { transform: translate(2px, 2px); }
         
-        .btn-add { background: var(--verde); color: white; }
-        .btn-primario { background: var(--roxo); color: white; width: 100%; padding: 18px; font-size: 18px; margin-top: 10px; }
-        .btn-limpar { background: var(--vermelho); color: white; padding: 6px 12px; font-size: 12px; }
+        .btn-add { background: #000; color: #fff; }
+        .btn-primario { background: #000; color: #fff; width: 100%; padding: 20px; font-size: 20px; margin-top: 10px; border: 4px solid #000; }
+        .btn-limpar { background: var(--vermelho); color: white; padding: 6px 12px; font-size: 11px; }
         
-        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
-        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
-        th { background: #f8f9fa; color: var(--cinza); position: sticky; top: 0; }
-        .badge-sap { font-family: monospace; font-weight: bold; color: var(--roxo); }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; border: 2px solid #000; }
+        th, td { padding: 10px; border: 1px solid #000; text-align: center; }
+        th { background: #000; color: #fff; }
+        .badge-sap { font-weight: 900; color: #000; }
         
-        .lista-scroll { max-height: 180px; overflow-y: auto; border: 1px solid #eee; margin-top: 10px; }
+        .lista-scroll { max-height: 180px; overflow-y: auto; margin-top: 10px; border: 1px solid #000; }
     </style>
 </head>
-<body onclick="iniciarSom()">
+<body onclick="tocarHeavyMetal()">
 
     <audio id="playerHH" loop>
         <source src="musica.mp3" type="audio/mpeg">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
         <header>
-            <h2>Lançamento de Horas ZPM</h2>
-            <small style="color: var(--cinza); font-weight: bold;">SOLO DE GUITARRA MODE ON</small>
+            <h2>Lançamento HH - HEAVY METAL</h2>
+            <p style="margin:0; font-size: 12px; font-weight: bold;">FOCO NO TRABALHO. PESO NA GUITARRA.</p>
         </header>
 
         <div class="secao">
-            <strong>1. Cadastro da Equipe</strong>
+            <strong>1. CADASTRO DE OPERADORES</strong>
             <div class="grid-cadastro" style="margin-top:10px;">
                 <input type="text" id="c-nome" placeholder="NOME">
                 <input type="text" id="c-re" placeholder="RE">
-                <input type="text" id="c-sap" placeholder="Nº PESSOAL">
-                <input type="text" id="c-centro" placeholder="CENTRO TRAB.">
-                <button class="btn-add" onclick="adicionarColaborador()">+ CADASTRAR</button>
+                <input type="text" id="c-sap" placeholder="Nº SAP">
+                <input type="text" id="c-centro" placeholder="CENTRO">
+                <button class="btn-add" onclick="adicionarColaborador()">ADICIONAR</button>
             </div>
             <div class="lista-scroll">
                 <table>
-                    <thead><tr><th>✔</th><th>NOME</th><th>RE</th><th>SAP</th><th>CENTRO</th><th>AÇÃO</th></tr></thead>
+                    <thead><tr><th>✔</th><th>NOME</th><th>RE</th><th>SAP</th><th>CENTRO</th><th>X</th></tr></thead>
                     <tbody id="corpo-equipe"></tbody>
                 </table>
             </div>
         </div>
 
         <div class="secao">
-            <strong>2. Dados da Ordem e Horários</strong>
+            <strong>2. ORDEM E HORÁRIOS</strong>
             <div style="display: flex; gap: 10px; margin: 10px 0;">
-                <input type="text" id="num-ordem" placeholder="Nº DA ORDEM" style="flex: 2;">
-                <button onclick="addLinhaOp()" style="background:#444; color:white; flex: 1;">+ ADD OPERAÇÃO</button>
+                <input type="text" id="num-ordem" placeholder="Nº ORDEM" style="flex: 2;">
+                <button onclick="addLinhaOp()" style="background:#333; color:white; flex: 1;">+ OPERAÇÃO</button>
             </div>
             <table>
-                <thead><tr><th>OPER.</th><th>DATA INÍCIO</th><th>HORA</th><th>DATA FIM</th><th>HORA</th></tr></thead>
+                <thead><tr><th>OP.</th><th>DATA I</th><th>HORA I</th><th>DATA F</th><th>HORA F</th></tr></thead>
                 <tbody id="corpo-operacoes"></tbody>
             </table>
         </div>
 
-        <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR DADOS PARA COPIAR</button>
+        <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR LINHAS PARA O SAP</button>
 
         <div class="secao" style="margin-top:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong>3. Resultado (Formato Planilha SAP)</strong>
-                <button class="btn-limpar" onclick="document.getElementById('corpo-final').innerHTML=''">Limpar Tabela</button>
+                <strong>3. PRONTO PARA COLAR</strong>
+                <button class="btn-limpar" onclick="document.getElementById('corpo-final').innerHTML=''">LIMPAR TUDO</button>
             </div>
             <div style="overflow-x: auto; margin-top:10px;">
                 <table id="tab-final">
                     <thead>
                         <tr style="background:#eee">
-                            <th>ORDEM</th><th>OPER.</th><th>SAP</th><th>CENTRO</th><th>DATA I</th><th>HORA I</th><th>DATA F</th><th>HORA F</th>
+                            <th>ORDEM</th><th>OP.</th><th>SAP</th><th>CENTRO</th><th>DATA I</th><th>HORA I</th><th>DATA F</th><th>HORA F</th>
                         </tr>
                     </thead>
                     <tbody id="corpo-final"></tbody>
                 </table>
             </div>
-            <button onclick="copiarDados()" style="background:#222; color:white; width:100%; padding:20px; margin-top:15px; border-radius:8px; font-size: 16px;">📋 COPIAR TUDO (GUITAR SOLO)</button>
+            <button onclick="copiarDados()" style="background:#000; color:#fff; width:100%; padding:20px; margin-top:15px; font-size: 18px; font-weight: 900;">📋 COPIAR E LANÇAR AGORA</button>
         </div>
     </div>
 
     <script>
         const audio = document.getElementById('playerHH');
-        let tocando = false;
+        let playAtivo = false;
 
-        function iniciarSom() {
-            if (!tocando) {
-                audio.volume = 0.4;
+        function tocarHeavyMetal() {
+            if (!playAtivo) {
+                audio.volume = 0.5; // Som com presença
                 audio.play();
-                tocando = true;
+                playAtivo = true;
             }
         }
 
@@ -131,7 +132,7 @@
                     <td>${p.re}</td>
                     <td class="badge-sap">${p.sap}</td>
                     <td>${p.centro}</td>
-                    <td><button onclick="removerColab(${i})" style="color:var(--vermelho); background:none; font-size:16px">×</button></td>
+                    <td><button onclick="removerColab(${i})" style="color:red; background:none; border:none;">X</button></td>
                 </tr>`;
             });
             localStorage.setItem('sap_hh_data', JSON.stringify(equipe));
@@ -152,18 +153,16 @@
         function removerColab(i) { equipe.splice(i, 1); renderizarEquipe(); }
 
         function addLinhaOp() {
-            const ordem = document.getElementById("num-ordem").value.trim();
             const hoje = new Date().toISOString().split('T')[0];
             const tr = document.createElement("tr");
             tr.className = "row-op";
-            tr.dataset.ordem = ordem;
             tr.innerHTML = `
-                <td><input type="text" class="s-op" value="0010" style="width:55px; text-align:center"></td>
+                <td><input type="text" class="s-op" value="0010" style="width:55px"></td>
                 <td><input type="date" class="di" value="${hoje}"></td>
                 <td><input type="time" class="hi" value="07:30"></td>
                 <td><input type="date" class="df" value="${hoje}"></td>
                 <td><input type="time" class="hf" value="17:18"></td>
-                <td><button onclick="this.closest('tr').remove()" style="color:red; background:none;">×</button></td>
+                <td><button onclick="this.closest('tr').remove()" style="border:none; color:red;">X</button></td>
             `;
             document.getElementById("corpo-operacoes").appendChild(tr);
         }
@@ -171,22 +170,14 @@
         function gerarTabelaFinal() {
             const selecionados = document.querySelectorAll(".user-sel:checked");
             const ops = document.querySelectorAll(".row-op");
+            const ordem = document.getElementById("num-ordem").value.trim();
             const corpo = document.getElementById("corpo-final");
             corpo.innerHTML = "";
             selecionados.forEach(sel => {
                 const p = equipe.find(col => col.sap === sel.value);
                 ops.forEach(op => {
                     const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${op.dataset.ordem}</td>
-                        <td>${op.querySelector(".s-op").value}</td>
-                        <td>${p.sap}</td>
-                        <td>${p.centro}</td>
-                        <td>${formatarDataSAP(op.querySelector(".di").value)}</td>
-                        <td>${formatarHoraSAP(op.querySelector(".hi").value)}</td>
-                        <td>${formatarDataSAP(op.querySelector(".df").value)}</td>
-                        <td>${formatarHoraSAP(op.querySelector(".hf").value)}</td>
-                    `;
+                    tr.innerHTML = `<td>${ordem}</td><td>${op.querySelector(".s-op").value}</td><td>${p.sap}</td><td>${p.centro}</td><td>${formatarDataSAP(op.querySelector(".di").value)}</td><td>${formatarHoraSAP(op.querySelector(".hi").value)}</td><td>${formatarDataSAP(op.querySelector(".df").value)}</td><td>${formatarHoraSAP(op.querySelector(".hf").value)}</td>`;
                     corpo.appendChild(tr);
                 });
             });
@@ -197,14 +188,13 @@
             let t = "";
             rows.forEach(r => {
                 const d = r.querySelectorAll("td");
-                // Ordem [TAB] Op [8 TABS] Centro [TAB] SAP [TAB] Datas/Horas
                 t += `${d[0].innerText}\t${d[1].innerText}\t\t\t\t\t\t\t\t${d[3].innerText}\t${d[2].innerText}\t${d[4].innerText}\t${d[5].innerText}\t${d[6].innerText}\t${d[7].innerText}\n`;
             });
             const el = document.createElement("textarea");
             el.value = t; document.body.appendChild(el);
             el.select(); document.execCommand("copy");
             document.body.removeChild(el);
-            alert("COPIADO! Só colar no SAP.");
+            alert("COPIADO! AGORA LANÇA ISSO LOGO.");
         }
 
         window.onload = renderizarEquipe;
