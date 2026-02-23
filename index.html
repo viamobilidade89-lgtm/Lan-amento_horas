@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinalização - ZPM HH Pro (v9 Auto-Music)</title>
+    <title>Sinalização SAP - ZPM HH Pro</title>
     <style>
         :root { --roxo: #5E22F3; --verde: #28a745; --vermelho: #dc3545; --fundo: #f4f7f6; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); margin: 0; padding: 15px; font-size: 14px; }
@@ -22,37 +22,29 @@
         .badge-sap { font-family: monospace; font-weight: bold; color: var(--roxo); }
     </style>
 </head>
-<body onclick="playAudio()">
+<body onclick="ativarSom()">
 
-    <audio id="musicaFundo" loop>
-        <source src="System of a Down - B.Y.O.B. [Custom Instrumental](MP3_160K).mp3" type="audio/mpeg">
+    <audio id="playerHH" loop>
+        <source src="musica.mp3" type="audio/mpeg">
     </audio>
 
 <div class="container">
     <header style="text-align:center; margin-bottom:15px;">
         <h2 style="margin:0; color:var(--roxo);">Lançamento HH - Sinalização</h2>
-        <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">ZPM_LANCTO_HH | Formato: DD.MM.YYYY</p>
+        <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">ZPM_LANCTO_HH | Formato SAP Validado</p>
     </header>
 
     <div class="secao">
         <div class="grid-cadastro">
-            <input type="text" id="c-nome" placeholder="Nome">
+            <input type="text" id="c-nome" placeholder="Nome do Colaborador">
             <input type="text" id="c-re" placeholder="RE">
             <input type="text" id="c-sap" placeholder="Nº Pessoal (SAP)">
-            <input type="text" id="c-centro" placeholder="Centro Trab.">
-            <select id="c-equipe">
-                <option value="Sinalização">Sinalização</option>
-                <option value="Energia">Energia</option>
-            </select>
-            <select id="c-escala">
-                <option value="Noturno">Noturno</option>
-                <option value="Diurno">Diurno</option>
-            </select>
+            <input type="text" id="c-centro" placeholder="Centro de Trabalho">
             <button class="btn-add" onclick="adicionarColaborador()">+ CADASTRAR</button>
         </div>
         <div class="lista-scroll">
             <table>
-                <thead><tr><th>Sel.</th><th>Nome</th><th>RE</th><th>SAP</th><th>Centro</th><th>X</th></tr></thead>
+                <thead><tr><th>Sel.</th><th>Nome</th><th>RE</th><th>SAP</th><th>Centro</th><th>Ação</th></tr></thead>
                 <tbody id="corpo-equipe"></tbody>
             </table>
         </div>
@@ -60,20 +52,20 @@
 
     <div class="secao">
         <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <input type="number" id="num-ordem" placeholder="Ordem SAP" style="flex: 1;">
+            <input type="number" id="num-ordem" placeholder="Número da Ordem SAP" style="flex: 1;">
             <button onclick="addLinhaOp()" style="background:#444; color:white;">+ Nova Operação</button>
         </div>
         <table>
-            <thead><tr><th>Operação</th><th>Início</th><th>Hora</th><th>Fim</th><th>Hora</th><th>X</th></tr></thead>
+            <thead><tr><th>Operação</th><th>Início</th><th>Hora</th><th>Fim</th><th>Hora</th><th>Remover</th></tr></thead>
             <tbody id="corpo-operacoes"></tbody>
         </table>
     </div>
 
-    <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR LANÇAMENTO FINAL</button>
+    <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR LANÇAMENTO PARA O SAP</button>
 
     <div class="secao" style="margin-top:15px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <strong>Planilha para Colagem</strong>
+            <strong>Visualização Pré-Colagem</strong>
             <button class="btn-limpar" onclick="limparPlanilhaFinal()">Limpar Planilha</button>
         </div>
         <div style="overflow-x: auto;">
@@ -86,38 +78,40 @@
                 <tbody id="corpo-final"></tbody>
             </table>
         </div>
-        <button onclick="copiarFinal()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px; font-size: 16px;">📋 COPIAR PARA O SAP</button>
+        <button onclick="copiarFinal()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px; font-size: 16px;">📋 COPIAR E COLAR NA ZPM</button>
     </div>
 </div>
 
 <script>
-    // Lógica do Áudio
-    const player = document.getElementById('musicaFundo');
-    function playAudio() {
-        if (player.paused) {
-            player.volume = 0.2; // Volume em 20% para não atrapalhar
-            player.play().catch(e => console.log("Aguardando interação..."));
+    // --- LÓGICA DE ÁUDIO ---
+    const audio = document.getElementById('playerHH');
+    let somIniciado = false;
+    function ativarSom() {
+        if (!somIniciado) {
+            audio.volume = 0.2;
+            audio.play().catch(e => console.log("Interação necessária"));
+            somIniciado = true;
         }
     }
 
-    // Lógica do Sistema
-    let equipe = JSON.parse(localStorage.getItem('sap_hh_v9')) || [];
+    // --- LÓGICA DO SISTEMA ---
+    let equipe = JSON.parse(localStorage.getItem('sap_hh_v11')) || [];
 
-    function formatarDataParaSAP(dataInput) {
-        if(!dataInput) return "";
-        const partes = dataInput.split("-");
-        return `${partes[2]}.${partes[1]}.${partes[0]}`;
+    function formatarDataSAP(data) {
+        if(!data) return "";
+        const [ano, mes, dia] = data.split("-");
+        return `${dia}.${mes}.${ano}`;
     }
 
-    function formatarHoraParaSAP(horaInput) {
-        if(!horaInput) return "00:00:00";
-        return horaInput.length === 5 ? horaInput + ":00" : horaInput;
+    function formatarHoraSAP(hora) {
+        if(!hora) return "00:00:00";
+        return hora.length === 5 ? hora + ":00" : hora;
     }
 
     function renderizarEquipe() {
         const corpo = document.getElementById("corpo-equipe");
         corpo.innerHTML = "";
-        equipe.sort((a,b) => a.nome.localeCompare(b.nome)).forEach((p, i) => {
+        equipe.forEach((p, i) => {
             corpo.innerHTML += `<tr>
                 <td><input type="checkbox" class="user-sel" value="${p.re}"></td>
                 <td style="text-align:left">${p.nome}</td>
@@ -127,7 +121,7 @@
                 <td><button onclick="removerColab(${i})" style="color:red; background:none;">X</button></td>
             </tr>`;
         });
-        localStorage.setItem('sap_hh_v9', JSON.stringify(equipe));
+        localStorage.setItem('sap_hh_v11', JSON.stringify(equipe));
     }
 
     function adicionarColaborador() {
@@ -135,14 +129,14 @@
         const re = document.getElementById("c-re").value.trim();
         const sap = document.getElementById("c-sap").value.replace(/\D/g, "");
         const centro = document.getElementById("c-centro").value.toUpperCase().trim();
-        if(!nome || !re || !sap) return alert("Preencha Nome, RE e SAP!");
+        if(!nome || !re || !sap) return alert("Erro: Nome, RE e SAP são obrigatórios.");
         equipe.push({nome, re, sap, centro});
         ["c-nome", "c-re", "c-sap", "c-centro"].forEach(id => document.getElementById(id).value = "");
         renderizarEquipe();
     }
 
     function removerColab(i) {
-        if(confirm("Remover colaborador?")) {
+        if(confirm("Deseja remover este colaborador da lista?")) {
             equipe.splice(i,1);
             renderizarEquipe();
             limparPlanilhaFinal();
@@ -172,7 +166,7 @@
         const selecionados = document.querySelectorAll(".user-sel:checked");
         const ops = document.querySelectorAll(".row-op");
         const corpo = document.getElementById("corpo-final");
-        if(!selecionados.length || !ops.length) return alert("Selecione a equipe e as operações!");
+        if(!selecionados.length || !ops.length) return alert("Selecione os colaboradores e adicione as operações.");
         corpo.innerHTML = "";
         selecionados.forEach(sel => {
             const p = equipe.find(col => col.re === sel.value);
@@ -182,10 +176,10 @@
                     <td>${op.querySelector(".s-op").value}</td>
                     <td>${p.sap}</td>
                     <td>${p.centro}</td>
-                    <td>${formatarDataParaSAP(op.querySelector(".di").value)}</td>
-                    <td>${formatarHoraParaSAP(op.querySelector(".hi").value)}</td>
-                    <td>${formatarDataParaSAP(op.querySelector(".df").value)}</td>
-                    <td>${formatarHoraParaSAP(op.querySelector(".hf").value)}</td>
+                    <td>${formatarDataSAP(op.querySelector(".di").value)}</td>
+                    <td>${formatarHoraSAP(op.querySelector(".hi").value)}</td>
+                    <td>${formatarDataSAP(op.querySelector(".df").value)}</td>
+                    <td>${formatarHoraSAP(op.querySelector(".hf").value)}</td>
                 </tr>`;
             });
         });
@@ -193,29 +187,25 @@
 
     function copiarFinal() {
         const rows = document.querySelectorAll("#corpo-final tr");
-        if(!rows.length) return alert("Gere a tabela primeiro!");
-        let textoFinal = "";
+        if(!rows.length) return alert("Gere a planilha primeiro.");
+        let txt = "";
         rows.forEach(r => {
-            const tds = r.querySelectorAll("td");
-            const linha = [
-                tds[0].innerText.trim(), 
-                tds[1].innerText.trim() + "\t\t\t\t\t\t\t\t", 
-                tds[3].innerText.trim(), 
-                tds[2].innerText.trim(), 
-                tds[4].innerText.trim(), 
-                tds[5].innerText.trim(), 
-                tds[6].innerText.trim(), 
-                tds[7].innerText.trim()
-            ];
-            textoFinal += linha.join("\t") + "\n";
+            const td = r.querySelectorAll("td");
+            // Ordem [TAB] Op [TAB x8] Centro [TAB] SAP [TAB] DataI [TAB] HoraI [TAB] DataF [TAB] HoraF
+            txt += td[0].innerText.trim() + "\t" + 
+                   td[1].innerText.trim() + "\t\t\t\t\t\t\t\t" + 
+                   td[3].innerText.trim() + "\t" + 
+                   td[2].innerText.trim() + "\t" + 
+                   td[4].innerText.trim() + "\t" + 
+                   td[5].innerText.trim() + "\t" + 
+                   td[6].innerText.trim() + "\t" + 
+                   td[7].innerText.trim() + "\n";
         });
         const area = document.createElement("textarea");
-        area.value = textoFinal;
-        document.body.appendChild(area);
-        area.select();
-        document.execCommand('copy');
+        area.value = txt; document.body.appendChild(area);
+        area.select(); document.execCommand('copy');
         document.body.removeChild(area);
-        alert("Copiado!");
+        alert("Copiado! Basta colar na primeira coluna da transação ZPM.");
     }
 
     window.onload = renderizarEquipe;
