@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAP HH Pro - HEAVY METAL EDITION</title>
+    <title>SAP HH Pro - Lyria Metal Edition</title>
     <style>
         :root { --roxo: #5E22F3; --verde: #28a745; --vermelho: #dc3545; --fundo: #f4f7f6; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); margin: 0; padding: 15px; font-size: 14px; }
@@ -11,7 +11,6 @@
         .secao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
         .grid-cadastro { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 10px; }
         input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        /* Força visual de maiúsculas nos inputs */
         input { text-transform: uppercase; } 
         button { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
         .btn-add { background: var(--verde); color: white; }
@@ -24,16 +23,16 @@
         .badge-sap { font-family: monospace; font-weight: bold; color: var(--roxo); }
     </style>
 </head>
-<body onclick="iniciarMetal()">
+<body onclick="tocarMetal()">
 
-    <audio id="metalPlayer" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <audio id="lyriaPlayer" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" type="audio/mpeg">
     </audio>
 
 <div class="container">
     <header style="text-align:center; margin-bottom:15px;">
         <h2 style="margin:0; color:var(--roxo);">Lançamento HH - Sinalização</h2>
-        <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">HEAVY METAL MODE | TUDO EM MAIÚSCULO</p>
+        <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">MODO METAL ATIVADO | LETRAS MAIÚSCULAS</p>
     </header>
 
     <div class="secao">
@@ -67,7 +66,7 @@
 
     <div class="secao" style="margin-top:15px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <strong>Tabela para Colagem ZPM</strong>
+            <strong>Planilha para Colagem</strong>
             <button class="btn-limpar" onclick="limparPlanilhaFinal()">Limpar</button>
         </div>
         <div style="overflow-x: auto;">
@@ -85,18 +84,19 @@
 </div>
 
 <script>
-    const player = document.getElementById('metalPlayer');
+    const player = document.getElementById('lyriaPlayer');
     let tocando = false;
 
-    function iniciarMetal() {
+    // Função para iniciar a música no primeiro clique
+    function tocarMetal() {
         if (!tocando) {
-            player.volume = 0.3; // Volume um pouco mais alto para o Metal
+            player.volume = 0.3;
             player.play();
             tocando = true;
         }
     }
 
-    let equipe = JSON.parse(localStorage.getItem('sap_hh_v14')) || [];
+    let equipe = JSON.parse(localStorage.getItem('sap_hh_v15')) || [];
 
     function renderizarEquipe() {
         const corpo = document.getElementById("corpo-equipe");
@@ -111,17 +111,17 @@
                 <td><button onclick="removerColab(${i})" style="color:red; background:none;">X</button></td>
             </tr>`;
         });
-        localStorage.setItem('sap_hh_v14', JSON.stringify(equipe));
+        localStorage.setItem('sap_hh_v15', JSON.stringify(equipe));
     }
 
     function adicionarColaborador() {
-        // CONVERSÃO FORÇADA PARA MAIÚSCULAS
+        // Garante MAIÚSCULAS no salvamento
         const nome = document.getElementById("c-nome").value.toUpperCase().trim();
         const re = document.getElementById("c-re").value.toUpperCase().trim();
         const sap = document.getElementById("c-sap").value.replace(/\D/g, "");
         const centro = document.getElementById("c-centro").value.toUpperCase().trim();
 
-        if(!nome || !re || !sap) return alert("Preencha os campos obrigatórios!");
+        if(!nome || !re || !sap) return alert("Preencha todos os campos!");
         
         equipe.push({nome, re, sap, centro});
         ["c-nome", "c-re", "c-sap", "c-centro"].forEach(id => document.getElementById(id).value = "");
@@ -129,7 +129,7 @@
     }
 
     function removerColab(i) {
-        if(confirm("Remover este colaborador?")) { equipe.splice(i,1); renderizarEquipe(); limparPlanilhaFinal(); }
+        if(confirm("Deseja remover?")) { equipe.splice(i,1); renderizarEquipe(); limparPlanilhaFinal(); }
     }
 
     function limparPlanilhaFinal() { document.getElementById("corpo-final").innerHTML = ""; }
@@ -155,7 +155,7 @@
         const selecionados = document.querySelectorAll(".user-sel:checked");
         const ops = document.querySelectorAll(".row-op");
         const corpo = document.getElementById("corpo-final");
-        if(!selecionados.length || !ops.length) return alert("Selecione a equipe e as operações.");
+        if(!selecionados.length || !ops.length) return alert("Selecione equipe e operações!");
         corpo.innerHTML = "";
         selecionados.forEach(sel => {
             const p = equipe.find(col => col.re === sel.value);
@@ -178,11 +178,11 @@
 
     function copiarFinal() {
         const rows = document.querySelectorAll("#corpo-final tr");
-        if(!rows.length) return alert("Gere a tabela primeiro!");
+        if(!rows.length) return alert("Gere a tabela!");
         let txt = "";
         rows.forEach(r => {
             const td = r.querySelectorAll("td");
-            // Formato de tabulação exato para ZPM SAP
+            // Formatação com tabulação exata para colar direto no SAP
             txt += td[0].innerText.trim() + "\t" + td[1].innerText.trim() + "\t\t\t\t\t\t\t\t" + 
                    td[3].innerText.trim() + "\t" + td[2].innerText.trim() + "\t" + 
                    td[4].innerText.trim() + "\t" + td[5].innerText.trim() + "\t" + 
@@ -192,7 +192,7 @@
         area.value = txt; document.body.appendChild(area);
         area.select(); document.execCommand('copy');
         document.body.removeChild(area);
-        alert("Copiado! Agora cole na transação ZPM.");
+        alert("Copiado com Sucesso!");
     }
 
     window.onload = renderizarEquipe;
