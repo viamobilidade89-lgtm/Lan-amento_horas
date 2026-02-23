@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAP HH Pro - Sinalização</title>
+    <title>SAP HH Pro - Metal Edition</title>
     <style>
         :root { --roxo: #5E22F3; --verde: #28a745; --vermelho: #dc3545; --fundo: #f4f7f6; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); margin: 0; padding: 15px; font-size: 14px; }
@@ -22,21 +22,21 @@
         .badge-sap { font-family: monospace; font-weight: bold; color: var(--roxo); }
     </style>
 </head>
-<body onclick="iniciarSom()">
+<body onclick="iniciarMusica()">
 
     <audio id="playerHH" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+        <source src="musica.mp3" type="audio/mpeg">
     </audio>
 
 <div class="container">
     <header style="text-align:center; margin-bottom:15px;">
         <h2 style="margin:0; color:var(--roxo);">Lançamento HH - Sinalização</h2>
-        <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">ZPM_LANCTO_HH | Formato: DD.MM.YYYY | Hora: HH:MM:SS</p>
+        <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">ZPM_LANCTO_HH | TUDO EM MAIÚSCULO</p>
     </header>
 
     <div class="secao">
         <div class="grid-cadastro">
-            <input type="text" id="c-nome" placeholder="Nome">
+            <input type="text" id="c-nome" placeholder="Nome (Auto-Maiúsculo)">
             <input type="text" id="c-re" placeholder="RE">
             <input type="text" id="c-sap" placeholder="Nº Pessoal (SAP)">
             <input type="text" id="c-centro" placeholder="Centro Trab.">
@@ -78,27 +78,18 @@
                 <tbody id="corpo-final"></tbody>
             </table>
         </div>
-        <button onclick="copiarFinal()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px; font-size: 16px;">📋 COPIAR E COLAR NO SAP</button>
+        <button onclick="copiarFinal()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px; font-size: 16px;">📋 COPIAR PARA O SAP</button>
     </div>
 </div>
 
 <script>
-    // --- MOTOR DE ÁUDIO ---
+    // --- ÁUDIO ---
     const som = document.getElementById('playerHH');
-    let tocando = false;
-    function iniciarSom() {
-        if (!tocando) {
-            som.volume = 0.2;
-            som.play();
-            tocando = true;
-        }
-    }
+    let ativo = false;
+    function iniciarMusica() { if(!ativo) { som.volume = 0.2; som.play(); ativo = true; } }
 
-    // --- LÓGICA DO SISTEMA ---
-    let equipe = JSON.parse(localStorage.getItem('sap_hh_final')) || [];
-
-    function formatarData(d) { const p = d.split("-"); return `${p[2]}.${p[1]}.${p[0]}`; }
-    function formatarHora(h) { return h.length === 5 ? h + ":00" : h; }
+    // --- LÓGICA ---
+    let equipe = JSON.parse(localStorage.getItem('sap_hh_v12')) || [];
 
     function renderizarEquipe() {
         const corpo = document.getElementById("corpo-equipe");
@@ -113,15 +104,18 @@
                 <td><button onclick="removerColab(${i})" style="color:red; background:none;">X</button></td>
             </tr>`;
         });
-        localStorage.setItem('sap_hh_final', JSON.stringify(equipe));
+        localStorage.setItem('sap_hh_v12', JSON.stringify(equipe));
     }
 
     function adicionarColaborador() {
+        // AQUI ESTÁ A MÁGICA DO MAIÚSCULO .toUpperCase()
         const nome = document.getElementById("c-nome").value.toUpperCase().trim();
-        const re = document.getElementById("c-re").value.trim();
+        const re = document.getElementById("c-re").value.toUpperCase().trim();
         const sap = document.getElementById("c-sap").value.replace(/\D/g, "");
         const centro = document.getElementById("c-centro").value.toUpperCase().trim();
+
         if(!nome || !re || !sap) return alert("Preencha Nome, RE e SAP!");
+        
         equipe.push({nome, re, sap, centro});
         ["c-nome", "c-re", "c-sap", "c-centro"].forEach(id => document.getElementById(id).value = "");
         renderizarEquipe();
@@ -159,15 +153,17 @@
         selecionados.forEach(sel => {
             const p = equipe.find(col => col.re === sel.value);
             ops.forEach(op => {
+                const dI = op.querySelector(".di").value.split("-").reverse().join(".");
+                const dF = op.querySelector(".df").value.split("-").reverse().join(".");
                 corpo.innerHTML += `<tr>
                     <td>${op.dataset.ordem}</td>
                     <td>${op.querySelector(".s-op").value}</td>
                     <td>${p.sap}</td>
                     <td>${p.centro}</td>
-                    <td>${formatarData(op.querySelector(".di").value)}</td>
-                    <td>${formatarHora(op.querySelector(".hi").value)}</td>
-                    <td>${formatarData(op.querySelector(".df").value)}</td>
-                    <td>${formatarHora(op.querySelector(".hf").value)}</td>
+                    <td>${dI}</td>
+                    <td>${op.querySelector(".hi").value}:00</td>
+                    <td>${dF}</td>
+                    <td>${op.querySelector(".hf").value}:00</td>
                 </tr>`;
             });
         });
@@ -188,7 +184,7 @@
         area.value = txt; document.body.appendChild(area);
         area.select(); document.execCommand('copy');
         document.body.removeChild(area);
-        alert("Copiado com sucesso!");
+        alert("Copiado!");
     }
 
     window.onload = renderizarEquipe;
