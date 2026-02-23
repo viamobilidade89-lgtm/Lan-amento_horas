@@ -1,123 +1,224 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema de Lançamento de Horas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinalização - ZPM HH Pro (v7)</title>
     <style>
-        body { font-family: sans-serif; background-color: #f4f7f6; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { color: #333; margin-top: 0; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        select, input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; transition: 0.3s; }
-        .btn-primary { background-color: #007bff; color: white; width: 100%; font-size: 16px; }
-        .btn-primary:hover { background-color: #0056b3; }
-        .btn-secondary { background-color: #6c757d; color: white; margin-top: 10px; }
-        .hidden { display: none; }
-        .card-cadastro { border: 1px solid #e0e0e0; padding: 15px; border-radius: 5px; background: #fafafa; margin-top: 15px; }
+        :root { --roxo: #5E22F3; --verde: #28a745; --vermelho: #dc3545; --fundo: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); margin: 0; padding: 15px; font-size: 14px; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .secao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
+        .grid-cadastro { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 10px; }
+        input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
+        .btn-add { background: var(--verde); color: white; }
+        .btn-primario { background: var(--roxo); color: white; width: 100%; padding: 18px; font-size: 18px; border-radius: 8px; margin-top: 10px; }
+        .btn-limpar { background: var(--vermelho); color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; }
+        .lista-scroll { max-height: 200px; overflow-y: auto; border: 1px solid #eee; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
+        th { background: #f8f9fa; position: sticky; top: 0; z-index: 2; }
+        .badge-sap { font-family: 'Courier New', monospace; font-weight: bold; color: var(--roxo); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Lançamento de Horas</h2>
+    <header style="text-align:center; margin-bottom:15px;">
+        <h2 style="margin:0; color:var(--roxo);">Lançamento HH - Sinalização</h2>
+        <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">Formato Obrigatório: 23.02.2026 | 07:00:00</p>
+    </header>
 
-    <div id="secao-selecao">
-        <div class="form-group">
-            <label for="colaborador">Escolha o Colaborador:</label>
-            <select id="colaborador">
-                <option value="">-- Selecione --</option>
-                <option value="1">João Silva (RE: 1234)</option>
-                <option value="2">Maria Oliveira (RE: 5678)</option>
+    <div class="secao">
+        <div class="grid-cadastro">
+            <input type="text" id="c-nome" placeholder="Nome">
+            <input type="text" id="c-re" placeholder="RE">
+            <input type="text" id="c-sap" placeholder="Nº Pessoal (SAP)">
+            <input type="text" id="c-centro" placeholder="Centro Trab.">
+            <select id="c-equipe">
+                <option value="Sinalização">Sinalização</option>
+                <option value="Energia">Energia</option>
             </select>
+            <select id="c-escala">
+                <option value="Noturno">Noturno</option>
+                <option value="Diurno">Diurno</option>
+            </select>
+            <button class="btn-add" onclick="adicionarColaborador()">+ CADASTRAR</button>
         </div>
-        
-        <div class="form-group">
-            <label for="horas">Horas a Lançar:</label>
-            <input type="number" id="horas" placeholder="Ex: 08">
+        <div class="lista-scroll">
+            <table>
+                <thead><tr><th>Sel.</th><th>Nome</th><th>RE</th><th>SAP</th><th>Centro</th><th>X</th></tr></thead>
+                <tbody id="corpo-equipe"></tbody>
+            </table>
         </div>
-
-        <button class="btn-primary" onclick="alert('Horas lançadas com sucesso!')">Lançar Horas</button>
-        
-        <hr>
-        <p style="font-size: 0.9rem;">Não encontrou o colaborador?</p>
-        <button class="btn-secondary" onclick="toggleCadastro()">+ Inserir Novo Colaborador</button>
     </div>
 
-    <div id="secao-cadastro" class="hidden card-cadastro">
-        <h3>Novo Cadastro</h3>
-        <div class="form-group">
-            <label>Nome Completo:</label>
-            <input type="text" id="novo-nome" placeholder="Digite o nome">
+    <div class="secao">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong style="color:var(--roxo)">Configuração das Horas</strong>
         </div>
-        <div class="form-group">
-            <label>RE:</label>
-            <input type="text" id="novo-re" placeholder="Registro do Empregado">
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <input type="number" id="num-ordem" placeholder="Ordem SAP" style="flex: 1;">
+            <button onclick="addLinhaOp()" style="background:#444; color:white;">+ Nova Operação</button>
         </div>
-        <div class="form-group">
-            <label>Número Pessoal:</label>
-            <input type="tel" id="novo-tel" placeholder="(00) 00000-0000">
+        <table>
+            <thead><tr><th>Operação</th><th>Início</th><th>Hora</th><th>Fim</th><th>Hora</th><th>X</th></tr></thead>
+            <tbody id="corpo-operacoes"></tbody>
+        </table>
+    </div>
+
+    <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR LANÇAMENTO FINAL</button>
+
+    <div class="secao" style="margin-top:15px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong>Planilha para Colagem (ZPM_LANCTO_HH)</strong>
+            <button class="btn-limpar" onclick="limparPlanilhaFinal()">Limpar Planilha</button>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <div class="form-group" style="flex: 1;">
-                <label>Turno:</label>
-                <input type="text" id="novo-turno" placeholder="Ex: Manhã">
-            </div>
-            <div class="form-group" style="flex: 1;">
-                <label>Escala:</label>
-                <input type="text" id="novo-escala" placeholder="Ex: 5x2">
-            </div>
+        <div style="overflow-x: auto;">
+            <table id="tab-final">
+                <thead>
+                    <tr style="background:#eee">
+                        <th>Ordem</th><th>Oper.</th><th>Nº Pessoal</th><th>Centro</th><th>Data I</th><th>Hora I</th><th>Data F</th><th>Hora F</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-final"></tbody>
+            </table>
         </div>
-        <button class="btn-primary" onclick="salvarColaborador()">Salvar e Selecionar</button>
-        <button class="btn-secondary" style="background: transparent; color: #666;" onclick="toggleCadastro()">Cancelar</button>
+        <button onclick="copiarFinal()" style="background:#222; color:white; width:100%; padding:18px; margin-top:10px; border-radius:8px; font-size: 16px;">📋 COPIAR PARA O SAP</button>
     </div>
 </div>
 
 <script>
-    // Função para alternar entre seleção e cadastro
-    function toggleCadastro() {
-        const secaoSelecao = document.getElementById('secao-selecao');
-        const secaoCadastro = document.getElementById('secao-cadastro');
+    let equipe = JSON.parse(localStorage.getItem('sap_hh_v7')) || [];
+
+    function salvar() { localStorage.setItem('sap_hh_v7', JSON.stringify(equipe)); }
+
+    function formatarDataParaSAP(dataInput) {
+        if(!dataInput) return "";
+        const partes = dataInput.split("-"); // HTML entrega YYYY-MM-DD
+        return `${partes[2]}.${partes[1]}.${partes[0]}`; // Retorna DD.MM.YYYY
+    }
+
+    function formatarHoraParaSAP(horaInput) {
+        if(!horaInput) return "00:00:00";
+        return horaInput.length === 5 ? horaInput + ":00" : horaInput;
+    }
+
+    function renderizarEquipe() {
+        const corpo = document.getElementById("corpo-equipe");
+        corpo.innerHTML = "";
+        equipe.sort((a,b) => a.nome.localeCompare(b.nome)).forEach((p, i) => {
+            corpo.innerHTML += `<tr>
+                <td><input type="checkbox" class="user-sel" value="${p.re}"></td>
+                <td style="text-align:left">${p.nome}</td>
+                <td>${p.re}</td>
+                <td class="badge-sap">${p.sap}</td>
+                <td>${p.centro}</td>
+                <td><button onclick="removerColab(${i})" style="color:red; background:none;">X</button></td>
+            </tr>`;
+        });
+        salvar();
+    }
+
+    function adicionarColaborador() {
+        const nome = document.getElementById("c-nome").value.toUpperCase().trim();
+        const re = document.getElementById("c-re").value.trim();
+        const sap = document.getElementById("c-sap").value.replace(/\D/g, "");
+        const centro = document.getElementById("c-centro").value.toUpperCase().trim();
         
-        secaoSelecao.classList.toggle('hidden');
-        secaoCadastro.classList.toggle('hidden');
+        if(!nome || !re || !sap) return alert("Preencha Nome, RE e SAP!");
+        
+        equipe.push({nome, re, sap, centro, equipe: document.getElementById("c-equipe").value, escala: document.getElementById("c-escala").value});
+        
+        ["c-nome", "c-re", "c-sap", "c-centro"].forEach(id => document.getElementById(id).value = "");
+        renderizarEquipe();
     }
 
-    // Função simulada para salvar o colaborador e atualizar a lista
-    function salvarColaborador() {
-        const nome = document.getElementById('novo-nome').value;
-        const re = document.getElementById('novo-re').value;
-
-        if (nome === '' || re === '') {
-            alert('Por favor, preencha o Nome e o RE.');
-            return;
+    function removerColab(i) {
+        if(confirm("Remover colaborador?")) {
+            equipe.splice(i,1);
+            renderizarEquipe();
+            limparPlanilhaFinal();
         }
-
-        // Adiciona o novo colaborador no select
-        const select = document.getElementById('colaborador');
-        const option = document.createElement('option');
-        option.text = `${nome} (RE: ${re})`;
-        option.value = re; // Usando RE como valor
-        select.add(option);
-
-        // Seleciona o novo colaborador automaticamente
-        select.value = re;
-
-        // Limpa os campos e volta para a tela inicial
-        alert('Colaborador cadastrado com sucesso!');
-        toggleCadastro();
-        limparCamposCadastro();
     }
 
-    function limparCamposCadastro() {
-        document.getElementById('novo-nome').value = '';
-        document.getElementById('novo-re').value = '';
-        document.getElementById('novo-tel').value = '';
-        document.getElementById('novo-turno').value = '';
-        document.getElementById('novo-escala').value = '';
+    function limparPlanilhaFinal() { document.getElementById("corpo-final").innerHTML = ""; }
+
+    function addLinhaOp() {
+        const ordem = document.getElementById("num-ordem").value;
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById("corpo-operacoes").innerHTML += `<tr class="row-op" data-ordem="${ordem}">
+            <td><select class="s-op">
+                <option value="0010">0010</option><option value="0020">0020</option>
+                <option value="0030">0030</option><option value="0040">0040</option>
+                <option value="0050">0050</option><option value="0060">0060</option>
+                <option value="0070">0070</option>
+            </select></td>
+            <td><input type="date" class="di" value="${hoje}"></td>
+            <td><input type="time" class="hi" value="00:00"></td>
+            <td><input type="date" class="df" value="${hoje}"></td>
+            <td><input type="time" class="hf" value="00:00"></td>
+            <td><button onclick="this.closest('tr').remove()" style="color:red; background:none;">X</button></td>
+        </tr>`;
     }
+
+    function gerarTabelaFinal() {
+        const selecionados = document.querySelectorAll(".user-sel:checked");
+        const ops = document.querySelectorAll(".row-op");
+        const corpo = document.getElementById("corpo-final");
+        
+        if(!selecionados.length || !ops.length) return alert("Selecione a equipe e as operações!");
+        
+        corpo.innerHTML = "";
+        selecionados.forEach(sel => {
+            const p = equipe.find(col => col.re === sel.value);
+            ops.forEach(op => {
+                corpo.innerHTML += `<tr>
+                    <td>${op.dataset.ordem}</td>
+                    <td>${op.querySelector(".s-op").value}</td>
+                    <td>${p.sap}</td>
+                    <td>${p.centro}</td>
+                    <td>${formatarDataParaSAP(op.querySelector(".di").value)}</td>
+                    <td>${formatarHoraParaSAP(op.querySelector(".hi").value)}</td>
+                    <td>${formatarDataParaSAP(op.querySelector(".df").value)}</td>
+                    <td>${formatarHoraParaSAP(op.querySelector(".hf").value)}</td>
+                </tr>`;
+            });
+        });
+    }
+
+    function copiarFinal() {
+        const rows = document.querySelectorAll("#corpo-final tr");
+        if(!rows.length) return alert("Gere a tabela primeiro!");
+        
+        let textoFinal = "";
+        rows.forEach(r => {
+            const tds = r.querySelectorAll("td");
+            // Montagem da linha com limpeza absoluta de espaços
+            const linha = [
+                tds[0].innerText.trim(), // Ordem
+                tds[1].innerText.trim() + "\t\t\t\t\t\t\t\t", // Operação + Saltos
+                tds[3].innerText.trim(), // Centro
+                tds[2].innerText.trim(), // SAP/Pessoal
+                tds[4].innerText.trim(), // Data I
+                tds[5].innerText.trim(), // Hora I
+                tds[6].innerText.trim(), // Data F
+                tds[7].innerText.trim()  // Hora F
+            ];
+            textoFinal += linha.join("\t") + "\n";
+        });
+
+        const area = document.createElement("textarea");
+        area.value = textoFinal;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        document.body.removeChild(area);
+        alert("Copiado! Se o formato 23.02.2026 e 07:00:00 aparecerem, o SAP aceitará.");
+    }
+
+    window.onload = renderizarEquipe;
 </script>
-
 </body>
 </html>
