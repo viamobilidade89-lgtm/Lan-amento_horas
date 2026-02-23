@@ -3,105 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZPM HH Pro - Metal Mode</title>
+    <title>ZPM HH Pro - Guitar Edition</title>
     <style>
         :root { 
             --roxo: #5E22F3; 
             --verde: #28a745; 
             --vermelho: #dc3545; 
-            --fundo: #000; /* Fundo preto para combinar com o estilo */
-            --dark: #1a1a1a; 
+            --fundo: #f4f7f6; 
+            --cinza: #666;
         }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); color: #fff; margin: 0; padding: 15px; font-size: 14px; }
-        .container { max-width: 1100px; margin: auto; background: #222; padding: 20px; border-radius: 12px; border: 1px solid #444; }
-        .secao { border: 1px solid #444; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #2a2a2a; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--fundo); margin: 0; padding: 15px; font-size: 14px; color: #333; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .secao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
         
-        input { padding: 10px; border: 1px solid #444; border-radius: 5px; background: #333; color: #fff; text-transform: uppercase; }
+        header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--roxo); padding-bottom: 10px; }
+        h2 { margin: 0; color: var(--roxo); text-transform: uppercase; }
+        
+        .grid-cadastro { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; text-transform: uppercase; font-size: 13px; }
         button { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; border-radius: 5px; }
         
         .btn-add { background: var(--verde); color: white; }
-        .btn-primario { background: var(--roxo); color: white; width: 100%; padding: 18px; font-size: 18px; margin-top: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-primario { background: var(--roxo); color: white; width: 100%; padding: 18px; font-size: 18px; margin-top: 10px; }
         .btn-limpar { background: var(--vermelho); color: white; padding: 6px 12px; font-size: 12px; }
         
-        table { width: 100%; border-collapse: collapse; font-size: 13px; color: #eee; }
-        th, td { padding: 10px; border-bottom: 1px solid #444; text-align: center; }
-        th { background: #333; position: sticky; top: 0; z-index: 2; }
-        .badge-sap { font-family: monospace; font-weight: bold; color: #00ff00; }
-        .grid-cadastro { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
+        th { background: #f8f9fa; color: var(--cinza); position: sticky; top: 0; }
+        .badge-sap { font-family: monospace; font-weight: bold; color: var(--roxo); }
+        
+        .lista-scroll { max-height: 180px; overflow-y: auto; border: 1px solid #eee; margin-top: 10px; }
     </style>
 </head>
-<body onclick="ativarMusica()">
+<body onclick="iniciarSom()">
 
     <audio id="playerHH" loop>
         <source src="musica.mp3" type="audio/mpeg">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
-        <header style="text-align:center; margin-bottom:20px; border-bottom: 2px solid var(--roxo); padding-bottom: 10px;">
-            <h1 style="margin:0; color:var(--roxo);">ZPM HEAVY METAL HH</h1>
-            <p style="margin:5px 0; color:var(--vermelho); font-weight:bold;">SISTEMA DE LANÇAMENTO RÁPIDO</p>
+        <header>
+            <h2>Lançamento de Horas ZPM</h2>
+            <small style="color: var(--cinza); font-weight: bold;">SOLO DE GUITARRA MODE ON</small>
         </header>
 
         <div class="secao">
-            <strong>EQUIPE</strong>
+            <strong>1. Cadastro da Equipe</strong>
             <div class="grid-cadastro" style="margin-top:10px;">
                 <input type="text" id="c-nome" placeholder="NOME">
                 <input type="text" id="c-re" placeholder="RE">
-                <input type="text" id="c-sap" placeholder="SAP">
-                <input type="text" id="c-centro" placeholder="CENTRO">
-                <button class="btn-add" onclick="adicionarColaborador()">CADASTRAR</button>
+                <input type="text" id="c-sap" placeholder="Nº PESSOAL">
+                <input type="text" id="c-centro" placeholder="CENTRO TRAB.">
+                <button class="btn-add" onclick="adicionarColaborador()">+ CADASTRAR</button>
             </div>
-            <div style="max-height: 150px; overflow-y: auto; margin-top:10px; border: 1px solid #444;">
+            <div class="lista-scroll">
                 <table>
-                    <thead><tr><th>✔</th><th>NOME</th><th>SAP</th><th>CENTRO</th><th>AÇÃO</th></tr></thead>
+                    <thead><tr><th>✔</th><th>NOME</th><th>RE</th><th>SAP</th><th>CENTRO</th><th>AÇÃO</th></tr></thead>
                     <tbody id="corpo-equipe"></tbody>
                 </table>
             </div>
         </div>
 
         <div class="secao">
-            <strong>DADOS DA ORDEM</strong>
+            <strong>2. Dados da Ordem e Horários</strong>
             <div style="display: flex; gap: 10px; margin: 10px 0;">
-                <input type="text" id="num-ordem" placeholder="Nº ORDEM" style="flex: 2;">
-                <button onclick="addLinhaOp()" style="background:#444; color:white; flex: 1;">+ OPERAÇÃO</button>
+                <input type="text" id="num-ordem" placeholder="Nº DA ORDEM" style="flex: 2;">
+                <button onclick="addLinhaOp()" style="background:#444; color:white; flex: 1;">+ ADD OPERAÇÃO</button>
             </div>
             <table>
-                <thead><tr><th>OP.</th><th>DATA I</th><th>HORA I</th><th>DATA F</th><th>HORA F</th><th>-</th></tr></thead>
+                <thead><tr><th>OPER.</th><th>DATA INÍCIO</th><th>HORA</th><th>DATA FIM</th><th>HORA</th></tr></thead>
                 <tbody id="corpo-operacoes"></tbody>
             </table>
         </div>
 
-        <button class="btn-primario" onclick="gerarTabelaFinal()">GERAR PARA SAP</button>
+        <button class="btn-primario" onclick="gerarTabelaFinal()">🚀 GERAR DADOS PARA COPIAR</button>
 
         <div class="secao" style="margin-top:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong>RESULTADO FINAL</strong>
-                <button class="btn-limpar" onclick="document.getElementById('corpo-final').innerHTML=''">LIMPAR</button>
+                <strong>3. Resultado (Formato Planilha SAP)</strong>
+                <button class="btn-limpar" onclick="document.getElementById('corpo-final').innerHTML=''">Limpar Tabela</button>
             </div>
             <div style="overflow-x: auto; margin-top:10px;">
                 <table id="tab-final">
                     <thead>
-                        <tr style="background:#333">
-                            <th>ORDEM</th><th>OP.</th><th>SAP</th><th>CENTRO</th><th>INÍCIO</th><th>FIM</th>
+                        <tr style="background:#eee">
+                            <th>ORDEM</th><th>OPER.</th><th>SAP</th><th>CENTRO</th><th>DATA I</th><th>HORA I</th><th>DATA F</th><th>HORA F</th>
                         </tr>
                     </thead>
                     <tbody id="corpo-final"></tbody>
                 </table>
             </div>
-            <button onclick="copiarDados()" style="background:#eee; color:#000; width:100%; padding:20px; margin-top:15px; border-radius:8px; font-size: 18px; font-weight: 900;">COPIAR E MANDAR PRO SAP</button>
+            <button onclick="copiarDados()" style="background:#222; color:white; width:100%; padding:20px; margin-top:15px; border-radius:8px; font-size: 16px;">📋 COPIAR TUDO (GUITAR SOLO)</button>
         </div>
     </div>
 
     <script>
         const audio = document.getElementById('playerHH');
-        let musicaIniciada = false;
+        let tocando = false;
 
-        function ativarMusica() {
-            if (!musicaIniciada) {
+        function iniciarSom() {
+            if (!tocando) {
                 audio.volume = 0.4;
                 audio.play();
-                musicaIniciada = true;
+                tocando = true;
             }
         }
 
@@ -123,9 +128,10 @@
                 corpo.innerHTML += `<tr>
                     <td><input type="checkbox" class="user-sel" value="${p.sap}"></td>
                     <td style="text-align:left">${p.nome}</td>
+                    <td>${p.re}</td>
                     <td class="badge-sap">${p.sap}</td>
                     <td>${p.centro}</td>
-                    <td><button onclick="removerColab(${i})" style="color:red; background:none;">×</button></td>
+                    <td><button onclick="removerColab(${i})" style="color:var(--vermelho); background:none; font-size:16px">×</button></td>
                 </tr>`;
             });
             localStorage.setItem('sap_hh_data', JSON.stringify(equipe));
@@ -139,6 +145,7 @@
             if (nome && sap) {
                 equipe.push({ nome, re, sap, centro });
                 renderizarEquipe();
+                ["c-nome", "c-re", "c-sap", "c-centro"].forEach(id => document.getElementById(id).value = "");
             }
         }
 
@@ -151,7 +158,7 @@
             tr.className = "row-op";
             tr.dataset.ordem = ordem;
             tr.innerHTML = `
-                <td><input type="text" class="s-op" value="0010" style="width:45px"></td>
+                <td><input type="text" class="s-op" value="0010" style="width:55px; text-align:center"></td>
                 <td><input type="date" class="di" value="${hoje}"></td>
                 <td><input type="time" class="hi" value="07:30"></td>
                 <td><input type="date" class="df" value="${hoje}"></td>
@@ -170,7 +177,16 @@
                 const p = equipe.find(col => col.sap === sel.value);
                 ops.forEach(op => {
                     const tr = document.createElement("tr");
-                    tr.innerHTML = `<td>${op.dataset.ordem}</td><td>${op.querySelector(".s-op").value}</td><td>${p.sap}</td><td>${p.centro}</td><td>${formatarDataSAP(op.querySelector(".di").value)} ${formatarHoraSAP(op.querySelector(".hi").value)}</td><td>${formatarDataSAP(op.querySelector(".df").value)} ${formatarHoraSAP(op.querySelector(".hf").value)}</td>`;
+                    tr.innerHTML = `
+                        <td>${op.dataset.ordem}</td>
+                        <td>${op.querySelector(".s-op").value}</td>
+                        <td>${p.sap}</td>
+                        <td>${p.centro}</td>
+                        <td>${formatarDataSAP(op.querySelector(".di").value)}</td>
+                        <td>${formatarHoraSAP(op.querySelector(".hi").value)}</td>
+                        <td>${formatarDataSAP(op.querySelector(".df").value)}</td>
+                        <td>${formatarHoraSAP(op.querySelector(".hf").value)}</td>
+                    `;
                     corpo.appendChild(tr);
                 });
             });
@@ -181,15 +197,14 @@
             let t = "";
             rows.forEach(r => {
                 const d = r.querySelectorAll("td");
-                const [dataI, horaI] = d[4].innerText.split(" ");
-                const [dataF, horaF] = d[5].innerText.split(" ");
-                t += `${d[0].innerText}\t${d[1].innerText}\t\t\t\t\t\t\t\t${d[3].innerText}\t${d[2].innerText}\t${dataI}\t${horaI}\t${dataF}\t${horaF}\n`;
+                // Ordem [TAB] Op [8 TABS] Centro [TAB] SAP [TAB] Datas/Horas
+                t += `${d[0].innerText}\t${d[1].innerText}\t\t\t\t\t\t\t\t${d[3].innerText}\t${d[2].innerText}\t${d[4].innerText}\t${d[5].innerText}\t${d[6].innerText}\t${d[7].innerText}\n`;
             });
             const el = document.createElement("textarea");
             el.value = t; document.body.appendChild(el);
             el.select(); document.execCommand("copy");
             document.body.removeChild(el);
-            alert("COPIADO NO RITMO DO ROCK! DÊ CTRL+V NO SAP.");
+            alert("COPIADO! Só colar no SAP.");
         }
 
         window.onload = renderizarEquipe;
