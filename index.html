@@ -1,141 +1,373 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lançamento de Horas - Sinalização</title>
+    <title>Filtrar Colaboradores - SAP HPM</title>
     <style>
+        /* Estilo geral */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f4f6f8;
             margin: 20px;
+            color: #333;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+
+        h1 {
+            text-align: center;
+            color: #5E22F3;
+            margin-bottom: 20px;
         }
-        th, td {
+
+        /* Área de filtros */
+        .filtros {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        select, input[type="number"], input[type="date"], input[type="time"], button {
+            padding: 10px;
+            font-size: 14px;
             border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
+            border-radius: 5px;
         }
-        th {
-            background-color: #f2f2f2;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
+
         button {
-            padding: 10px 15px;
-            background-color: #007bff;
+            background-color: #5E22F3;
             color: white;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #0056b3;
+        }
+
+        /* Container */
+        .container {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Tabelas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        thead {
+            background-color: #5E22F3;
+            color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        footer {
+            text-align:center; 
+            padding:20px; 
+            color:white; 
+            background-color:#5E22F3; 
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .filtros {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            table, th, td {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Lançamento de Horas - Equipe de Sinalização</h2>
-        <div class="form-group">
-            <label for="ordem">Número da Ordem:</label>
-            <input type="text" id="ordem" placeholder="Ex: 12345678">
-        </div>
-        <div class="form-group">
-            <label for="operacao">Operação:</label>
-            <input type="text" id="operacao" value="0010">
-        </div>
-        <div class="form-group">
-            <label for="data">Data:</label>
-            <input type="date" id="data">
-        </div>
-        <div class="form-group">
-            <label for="inicio">Hora de Início:</label>
-            <input type="time" id="inicio" value="08:00">
-        </div>
-        <div class="form-group">
-            <label for="fim">Hora de Fim:</label>
-            <input type="time" id="fim" value="17:00">
-        </div>
-        <button onclick="gerarTabela()">Gerar Tabela</button>
-        <button onclick="copiarTabela()">Copiar para SAP</button>
 
-        <table id="tabelaHoras">
+    <div style="text-align: center; margin-bottom: 10px;">
+        <svg width="160" height="32" viewBox="0 0 160 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M37.5196 18.8391C34.1558 22.2567 36.0774 26.0881 33.2459 28.9655C32.0378 30.1954 30.3049 31.1111 28.3379 31.1111V16.7088C30.0029 16.7088 31.7056 16.2222 33.3252 14.5747C36.689 11.1571 34.7674 7.3295 37.5989 4.44828C38.8108 3.21839 40.5852 2.31801 42.5069 2.30269V16.705C40.8268 16.705 39.1393 17.1916 37.5196 18.8391Z" fill="#5E22F3"></path>
+            <path d="M23.3507 18.8391C19.9868 22.2567 21.9085 26.0881 19.0769 28.9655C17.8688 30.1954 16.1359 31.1111 14.169 31.1111V16.7088C15.8339 16.7088 17.5366 16.2222 19.1562 14.5747C22.5201 11.1571 20.5984 7.3295 23.4299 4.44828C24.6418 3.21839 26.4163 2.31801 28.3379 2.30269V16.705C26.6579 16.705 24.9703 17.1916 23.3507 18.8391Z" fill="#5E22F3"></path>
+            <path d="M9.18169 18.8391C5.81784 22.2567 7.7395 26.0881 4.90798 28.9655C3.69986 30.1954 1.92166 31.0996 0 31.1111V16.7088C1.66494 16.7088 3.36763 16.2222 4.98726 14.5747C8.35111 11.1571 6.42945 7.3295 9.26097 4.44828C10.4729 3.21839 12.2473 2.31801 14.169 2.30269V16.705C12.4889 16.705 10.8013 17.1916 9.18169 18.8391Z" fill="#5E22F3"></path>
+        </svg>
+    </div>
+
+    <h1>Filtrar Colaboradores</h1>
+
+    <div class="filtros">
+        <select id="filtroEquipe">
+            <option value="">Todas as Equipes</option>
+        </select>
+        <select id="filtroEscala">
+            <option value="">Todas as Escalas</option>
+        </select>
+        <button onclick="aplicarFiltros()">Filtrar</button>
+    </div>
+
+    <table id="tabela-colaboradores">
+        <thead>
+            <tr>
+                <th>Selecionar</th>
+                <th>Nome</th>
+                <th>RE</th>
+                <th>Número</th>
+                <th>Escala</th>
+                <th>Equipe</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <hr>
+
+    <div class="container">
+        <h2>Ordem de Operações</h2>
+        <form id="meuFormulario">
+            <label for="numeroOrdem"><strong>Número da Ordem:</strong></label>
+            <input type="number" required id="numeroOrdem" placeholder="Digite o número da ordem">
+            <button type="submit">Adicionar Operação</button>
+        </form>
+
+        <table id="tabelaOperacoes">
             <thead>
                 <tr>
-                    <th>Ordem</th>
-                    <th>Operação</th>
-                    <th>Nº Pessoal</th>
-                    <th>Data</th>
-                    <th>Início</th>
-                    <th>Fim</th>
+                    <th>Nome da Operação</th>
+                    <th>Código</th>
+                    <th>Data Início</th>
+                    <th>Hora Início</th>
+                    <th>Data Fim</th>
+                    <th>Hora Fim</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
+    <div style="text-align: center; gap: 10px; display: flex; justify-content: center;">
+        <button id="criarTabela" style="display: none;" onclick="createTable()">Gerar Tabela de Lançamento</button>
+        <button id="copiar" style="display: none;" onclick="copiarFormatoPersonalizado()">Copiar para SAP</button>
+        <button id="excluir" style="display: none;" onclick="excluirCorpo()">Limpar Lançamentos</button>
+    </div>
+
+    <table id="tabelaLancto">
+        <thead>
+            <tr>
+                <th>Ordem</th>
+                <th>Código</th>
+                <th>Número</th>
+                <th>Data Início</th>
+                <th>Hora Início</th>
+                <th>Data Fim</th>
+                <th>Hora Fim</th>
+                <th>Texto de Confirmação</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <footer>
+        Criado por <strong>Lucas Santana</strong> - Equipe Sinalização © 2025
+    </footer>
+
     <script>
-        const equipe = [
-            { nome: "ADRIANO", sap: "20579" },
-            { nome: "ALEX", sap: "23097" },
-            { nome: "BRUNO", sap: "19540" },
-            { nome: "CLAUDEMIR", sap: "20651" }
+        // Banco de dados dos colaboradores
+        const database = '[{"nome":"ADRIANO","re":"59-01777","numero":"20579","equipe":"Energia","escala":"Noturno"}, {"nome":"ALEX","re":"59-02966","numero":"23097","equipe":"Energia","escala":"Noturno"},{"nome":"BRUNO","re":"59-04951","numero":"19540","equipe":"Energia","escala":"Noturno"},{"nome":"CLAUDEMIR","re":"59-01651","numero":"20651","equipe":"Energia","escala":"Noturno"}, {"nome":"EUDES","re":"59-03110","numero":"","equipe":"Energia","escala":"Noturno"},{"nome":"GILMERSON","re":"59-02315","numero":"24056","equipe":"Energia","escala":"Noturno"}, {"nome":"GRACINO","re":"59-00447","numero":"20806","equipe":"Energia","escala":"Noturno"},{"nome":"GREGÓRIO","re":"59-02738","numero":"","equipe":"Energia","escala":"Noturno"}, {"nome":"IAGO","re":"59-02975","numero":"23584","equipe":"Energia","escala":"Noturno"},{"nome":"JAILSON","re":"59-03141","numero":"23924","equipe":"Energia","escala":"Noturno"}, {"nome":"JONE","re":"59-02967","numero":"24207","equipe":"Energia","escala":"Noturno"},{"nome":"JUNIOR","re":"59-01825","numero":"20903","equipe":"Energia","escala":"Noturno"}, {"nome":"KAMILYN","re":"59-04350","numero":"24587","equipe":"Energia","escala":"Noturno"},{"nome":"LEANDRO","re":"59-03077","numero":"14791","equipe":"Energia","escala":"Noturno"}, {"nome":"LUCIANO","re":"59-03444","numero":"23090","equipe":"Energia","escala":"Noturno"},{"nome":"MARCELO","re":"59-02318","numero":"23672","equipe":"Energia","escala":"Noturno"}, {"nome":"PAULO","re":"59-01797","numero":"21031","equipe":"Energia","escala":"Noturno"},{"nome":"RODRIGO","re":"59-02849","numero":"","equipe":"Energia","escala":"Noturno"}, {"nome":"RUTEMBERG","re":"59-00332","numero":"21096","equipe":"Energia","escala":"Noturno"},{"nome":"SIDNEI","re":"59-03370","numero":"24520","equipe":"Energia","escala":"Noturno"},{"nome":"NINGUEM","re":"59-00000","numero":"000001","equipe":"Energia","escala":"DIURNO"},{"nome":"NAO SEI","re":"59-00001","numero":"000002","equipe":"ALPHA","escala":"Noturno"}, {"nome":"VAGNER","re":"59-04500","numero":"24932","equipe":"Energia","escala":"Noturno"},{"nome":"VALTER","re":"59-00793","numero":"21131","equipe":"Energia","escala":"Noturno"}, {"nome":"WILLIAM FAUSTO","re":"59-04340","numero":"24435","equipe":"Energia","escala":"Noturno"},{"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589","equipe":"Energia","escala":"Noturno"}]';
+        
+        const colaboradores = JSON.parse(database);
+        const tbody = document.querySelector('#tabela-colaboradores tbody');
+        const filtroEquipe = document.getElementById('filtroEquipe');
+        const filtroEscala = document.getElementById('filtroEscala');
+
+        // Operações SAP
+        const operacoes = [
+            { nome: "Preparação", codigo: "0010" },
+            { nome: "Deslocamento", codigo: "0020" },
+            { nome: "Acesso", codigo: "0030" },
+            { nome: "Impedimento", codigo: "0040" },
+            { nome: "Desmobilização", codigo: "0050" },
+            { nome: "Execução 1", codigo: "0060" },
+            { nome: "Execução 2", codigo: "0070" },
+            { nome: "Execução 3", codigo: "0080" },
+            { nome: "Execução 4", codigo: "0090" }
         ];
 
-        function gerarTabela() {
-            const ordem = document.getElementById('ordem').value;
-            const operacao = document.getElementById('operacao').value;
-            const data = document.getElementById('data').value.split('-').reverse().join('.');
-            const inicio = document.getElementById('inicio').value;
-            const fim = document.getElementById('fim').value;
-            const tbody = document.querySelector('#tabelaHoras tbody');
-            
-            tbody.innerHTML = '';
-
-            equipe.forEach(membro => {
-                const row = `<tr>
-                    <td>${ordem}</td>
-                    <td>${operacao}</td>
-                    <td>${membro.sap}</td>
-                    <td>${data}</td>
-                    <td>${inicio}</td>
-                    <td>${fim}</td>
-                </tr>`;
-                tbody.innerHTML += row;
+        function preencherFiltros() {
+            const equipes = [...new Set(colaboradores.map(c => c.equipe))];
+            const escalas = [...new Set(colaboradores.map(c => c.escala))];
+            equipes.forEach(eq => {
+                const option = document.createElement('option');
+                option.value = eq; option.textContent = eq;
+                filtroEquipe.appendChild(option);
+            });
+            escalas.forEach(es => {
+                const option = document.createElement('option');
+                option.value = es; option.textContent = es;
+                filtroEscala.appendChild(option);
             });
         }
 
-        function copiarTabela() {
-            let texto = "";
-            const linhas = document.querySelectorAll("#tabelaHoras tbody tr");
+        function renderTabela(lista) {
+            tbody.innerHTML = '';
+            lista.forEach((colab, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="selecionar" data-re="${colab.re}"></td>
+                    <td>${colab.nome}</td>
+                    <td>${colab.re}</td>
+                    <td>${colab.numero}</td>
+                    <td>${colab.escala}</td>
+                    <td>${colab.equipe}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function aplicarFiltros() {
+            const equipe = filtroEquipe.value;
+            const escala = filtroEscala.value;
+            const filtrados = colaboradores.filter(c => {
+                return (equipe === '' || c.equipe === equipe) && (escala === '' || c.escala === escala);
+            });
+            renderTabela(filtrados);
+        }
+
+        document.getElementById('meuFormulario').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const tbodyOps = document.querySelector("#tabelaOperacoes tbody");
+            const tr = document.createElement("tr");
+            const selectOperacao = document.createElement("select");
             
+            operacoes.forEach(op => {
+                const option = document.createElement("option");
+                option.value = op.codigo;
+                option.textContent = `${op.nome} (${op.codigo})`;
+                selectOperacao.appendChild(option);
+            });
+
+            let local = new Date();
+            local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+            const dataHoje = local.toJSON().slice(0,10);
+
+            tr.innerHTML = `
+                <td></td>
+                <td class="cod-op"></td>
+                <td><input type="date" value="${dataHoje}"></td>
+                <td><input type="time" required></td>
+                <td><input type="date" value="${dataHoje}"></td>
+                <td><input type="time" required></td>
+                <td><button type="button" onclick="removerLinha(this)">Remover</button></td>
+                <td style="display: none">${document.getElementById("numeroOrdem").value}</td>
+            `;
+
+            tr.children[0].appendChild(selectOperacao);
+            const tdCodigo = tr.querySelector(".cod-op");
+            tdCodigo.textContent = selectOperacao.value;
+
+            selectOperacao.addEventListener("change", () => {
+                tdCodigo.textContent = selectOperacao.value;
+            });
+
+            tbodyOps.appendChild(tr);
+            document.getElementById("criarTabela").style.display="inline-block";
+        });
+
+        function removerLinha(botao) {
+            botao.closest("tr").remove();
+        }
+
+        function createTable() {
+            excluirCorpo();
+            const selecionados = [];
+            document.querySelectorAll('.selecionar:checked').forEach(checkbox => {
+                const re = checkbox.dataset.re;
+                const colab = colaboradores.find(c => c.re === re);
+                if (colab) selecionados.push(colab);
+            });
+
+            if (selecionados.length === 0) {
+                alert("Selecione ao menos um colaborador.");
+                return;
+            }
+
+            const opers = Array.from(document.querySelectorAll("#tabelaOperacoes tbody tr"));
+            const tbodyLacto = document.querySelector("#tabelaLancto tbody");
+
+            opers.forEach(op => {
+                const dataFormatadaStart = op.children[2].children[0].value.split("-").reverse().join(".");
+                const dataFormatadaEnd = op.children[4].children[0].value.split("-").reverse().join(".");
+                const horaInicio = op.children[3].children[0].value;
+                const horaFim = op.children[5].children[0].value;
+                const ordem = op.children[7].innerHTML;
+                const codOp = op.querySelector(".cod-op").textContent;
+
+                selecionados.forEach(people => {
+                    let textoConfirmação = people.numero === "" ? `${people.nome} ${people.re}` : "";
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${ordem}</td>
+                        <td>${codOp}</td>
+                        <td>${people.numero}</td>
+                        <td>${dataFormatadaStart}</td>
+                        <td>${horaInicio}:00</td>
+                        <td>${dataFormatadaEnd}</td>
+                        <td>${horaFim}:00</td>
+                        <td>${textoConfirmação}</td>
+                    `;
+                    tbodyLacto.append(tr);
+                });
+            });
+
+            document.getElementById("copiar").style.display="inline-block";
+            document.getElementById("excluir").style.display="inline-block";
+        }
+
+        function copiarFormatoPersonalizado() {
+            const linhas = document.querySelectorAll("#tabelaLancto tbody tr");
+            let texto = "";
             linhas.forEach(linha => {
                 const colunas = linha.querySelectorAll("td");
-                texto += `${colunas[0].innerText}\t${colunas[1].innerText}\t\t\t\t\t\t\t\t\t${colunas[2].innerText}\t${colunas[4].innerText}\t${colunas[5].innerText}\n`;
+                const ordem = colunas[0]?.textContent.trim();
+                const codigo = colunas[1]?.textContent.trim();
+                const resto = Array.from(colunas).slice(2, 7).map(td => td.textContent.trim());
+                const confirmacao = colunas[7]?.textContent.trim();
+                
+                // Formato para colar no SAP HPM (Ajuste os tabs conforme necessário)
+                texto += `${ordem}\t${codigo}${"\t".repeat(8)}${resto.join("\t")}\t\t${confirmacao}\n`;
             });
 
             navigator.clipboard.writeText(texto).then(() => {
-                alert("Copiado para a área de transferência!");
+                alert("Dados copiados com sucesso! Agora basta colar no SAP.");
             });
         }
+
+        function excluirCorpo() {
+            document.querySelector("#tabelaLancto tbody").innerHTML = "";
+        }
+
+        // Inicialização
+        preencherFiltros();
+        renderTabela(colaboradores);
     </script>
 </body>
 </html>
