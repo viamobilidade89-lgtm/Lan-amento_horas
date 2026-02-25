@@ -1,162 +1,141 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinalização - Lançamento de Horas SAP</title>
+    <title>Lançamento de Horas - Sinalização</title>
     <style>
-        :root { --roxo: #5E22F3; --verde: #28a745; --vermelho: #dc3545; --fundo: #f4f6f8; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--fundo); margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); }
-        
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid var(--roxo); padding-bottom: 20px; }
-        .logo-motiva { width: 200px; fill: var(--roxo); }
-        
-        .status-audio { background: #222; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid var(--roxo); cursor: pointer; }
-        
-        .secao { background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        h3 { color: var(--roxo); margin-top: 0; text-transform: uppercase; font-size: 16px; }
-
-        .grid-campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 15px; }
-        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 6px; width: 100%; box-sizing: border-box; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-        th { background: var(--roxo); color: white; padding: 12px; border: 1px solid #ddd; }
-        td { padding: 10px; border: 1px solid #ddd; text-align: center; }
-
-        button { padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-gerar { background: var(--roxo); color: white; width: 100%; font-size: 16px; margin-top: 10px; }
-        .btn-copiar { background: var(--verde); color: white; width: 100%; font-size: 18px; margin-top: 20px; padding: 20px; }
-        .btn-limpar { background: var(--vermelho); color: white; font-size: 12px; padding: 5px 15px; }
-        
-        .check-colab { transform: scale(1.5); cursor: pointer; }
-        .footer { text-align: center; margin-top: 30px; color: #777; font-size: 12px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
-<body onclick="iniciarAudio()">
-
-    <audio id="playerOriginal" loop src="musica.mp3"></audio>
-
+<body>
     <div class="container">
-        <div id="aviso-audio" class="status-audio">
-            🎵 CLIQUE AQUI PARA ATIVAR O SOM DA EQUIPE
+        <h2>Lançamento de Horas - Equipe de Sinalização</h2>
+        <div class="form-group">
+            <label for="ordem">Número da Ordem:</label>
+            <input type="text" id="ordem" placeholder="Ex: 12345678">
         </div>
+        <div class="form-group">
+            <label for="operacao">Operação:</label>
+            <input type="text" id="operacao" value="0010">
+        </div>
+        <div class="form-group">
+            <label for="data">Data:</label>
+            <input type="date" id="data">
+        </div>
+        <div class="form-group">
+            <label for="inicio">Hora de Início:</label>
+            <input type="time" id="inicio" value="08:00">
+        </div>
+        <div class="form-group">
+            <label for="fim">Hora de Fim:</label>
+            <input type="time" id="fim" value="17:00">
+        </div>
+        <button onclick="gerarTabela()">Gerar Tabela</button>
+        <button onclick="copiarTabela()">Copiar para SAP</button>
 
-        <div class="header">
-            <svg class="logo-motiva" viewBox="0 0 160 32" xmlns="http://www.w3.org/2000/svg">
-                <path d="M37.5196 18.8391C34.1558 22.2567 36.0774 26.0881 33.2459 28.9655C32.0378 30.1954 30.3049 31.1111 28.3379 31.1111V16.7088C30.0029 16.7088 31.7056 16.2222 33.3252 14.5747C36.689 11.1571 34.7674 7.3295 37.5989 4.44828C38.8108 3.21839 40.5852 2.31801 42.5069 2.30269V16.705C40.8268 16.705 39.1393 17.1916 37.5196 18.8391Z"></path>
-                <path d="M23.3507 18.8391C19.9868 22.2567 21.9085 26.0881 19.0769 28.9655C17.8688 30.1954 16.1359 31.1111 14.169 31.1111V16.7088C15.8339 16.7088 17.5366 16.2222 19.1562 14.5747C22.5201 11.1571 20.5984 7.3295 23.4299 4.44828C24.6418 3.21839 26.4163 2.31801 28.3379 2.30269V16.705C26.6579 16.705 24.9703 17.1916 23.3507 18.8391Z"></path>
-                <path d="M9.18169 18.8391C5.81784 22.2567 7.7395 26.0881 4.90798 28.9655C3.69986 30.1954 1.92166 31.0996 0 31.1111V16.7088C1.66494 16.7088 3.36763 16.2222 4.98726 14.5747C8.35111 11.1571 6.42945 7.3295 9.26097 4.44828C10.4729 3.21839 12.2473 2.31801 14.169 2.30269V16.705C12.4889 16.705 10.8013 17.1916 9.18169 18.8391Z"></path>
-            </svg>
-            <h1>Lançamento de Horas - ZPM SAP</h1>
-        </div>
-
-        <div class="secao">
-            <h3>1. Equipe</h3>
-            <div style="max-height: 250px; overflow-y: auto;">
-                <table id="tabelaColaboradores">
-                    <thead>
-                        <tr><th>✔</th><th>Colaborador</th><th>RE</th><th>Nº Pessoal</th></tr>
-                    </thead>
-                    <tbody id="listaPessoas">
-                        <tr><td><input type="checkbox" class="check-colab" data-sap="20579"></td><td>ADRIANO</td><td>59-01777</td><td>20579</td></tr>
-                        <tr><td><input type="checkbox" class="check-colab" data-sap="23097"></td><td>ALEX</td><td>59-02966</td><td>23097</td></tr>
-                        <tr><td><input type="checkbox" class="check-colab" data-sap="19540"></td><td>BRUNO</td><td>59-04951</td><td>19540</td></tr>
-                        <tr><td><input type="checkbox" class="check-colab" data-sap="20651"></td><td>CLAUDEMIR</td><td>59-01651</td><td>20651</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="secao">
-            <h3>2. Dados da Ordem e Horários</h3>
-            <div class="grid-campos">
-                <input type="number" id="campoOrdem" placeholder="Nº da Ordem">
-                <input type="date" id="campoData">
-                <select id="campoOperacao">
-                    <option value="0010">0010 - Preparação</option>
-                    <option value="0020">0020 - Deslocamento</option>
-                    <option value="0030">0030 - Acesso</option>
-                    <option value="0060">0060 - Execução</option>
-                    <option value="0090">0090 - Desmobilização</option>
-                </select>
-            </div>
-            <div class="grid-campos">
-                <input type="time" id="campoInicio" value="08:00">
-                <input type="time" id="campoFim" value="17:00">
-                <button class="btn-gerar" onclick="adicionarAoLancamento()">🚀 ADICIONAR LINHAS</button>
-            </div>
-        </div>
-
-        <div class="secao">
-            <div style="display: flex; justify-content: space-between;">
-                <h3>3. Resultado para o SAP</h3>
-                <button class="btn-limpar" onclick="limparTabela()">LIMPAR CORPO</button>
-            </div>
-            <table id="tabelaFinal">
-                <thead>
-                    <tr><th>Ordem</th><th>Op.</th><th>Nº Pessoal</th><th>Data</th><th>Início</th><th>Fim</th></tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <button class="btn-copiar" onclick="copiarParaSAP()">📋 COPIAR TUDO (ZPM)</button>
-        </div>
-
-        <div class="footer">
-            Sistema de Lançamento Sinalização - Lucas Santana © 2026
-        </div>
+        <table id="tabelaHoras">
+            <thead>
+                <tr>
+                    <th>Ordem</th>
+                    <th>Operação</th>
+                    <th>Nº Pessoal</th>
+                    <th>Data</th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
 
     <script>
-        function iniciarAudio() {
-            const player = document.getElementById('playerOriginal');
-            player.play().catch(() => {});
-            document.getElementById('aviso-audio').innerText = "🎵 SOM ATIVADO - BOA OPERAÇÃO!";
-        }
+        const equipe = [
+            { nome: "ADRIANO", sap: "20579" },
+            { nome: "ALEX", sap: "23097" },
+            { nome: "BRUNO", sap: "19540" },
+            { nome: "CLAUDEMIR", sap: "20651" }
+        ];
 
-        function adicionarAoLancamento() {
-            const ordem = document.getElementById('campoOrdem').value;
-            const dataRaw = document.getElementById('campoData').value;
-            const op = document.getElementById('campoOperacao').value;
-            const hI = document.getElementById('campoInicio').value;
-            const hF = document.getElementById('campoFim').value;
-            const selecionados = document.querySelectorAll('.check-colab:checked');
+        function gerarTabela() {
+            const ordem = document.getElementById('ordem').value;
+            const operacao = document.getElementById('operacao').value;
+            const data = document.getElementById('data').value.split('-').reverse().join('.');
+            const inicio = document.getElementById('inicio').value;
+            const fim = document.getElementById('fim').value;
+            const tbody = document.querySelector('#tabelaHoras tbody');
+            
+            tbody.innerHTML = '';
 
-            if(!ordem || !dataRaw || selecionados.length === 0) {
-                alert("Preencha Ordem, Data e selecione a equipe!");
-                return;
-            }
-
-            const dataSap = dataRaw.split('-').reverse().join('.');
-            const tbody = document.querySelector("#tabelaFinal tbody");
-
-            selecionados.forEach(s => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${ordem}</td><td>${op}</td><td>${s.dataset.sap}</td><td>${dataSap}</td><td>${hI}:00</td><td>${hF}:00</td>`;
-                tbody.appendChild(tr);
+            equipe.forEach(membro => {
+                const row = `<tr>
+                    <td>${ordem}</td>
+                    <td>${operacao}</td>
+                    <td>${membro.sap}</td>
+                    <td>${data}</td>
+                    <td>${inicio}</td>
+                    <td>${fim}</td>
+                </tr>`;
+                tbody.innerHTML += row;
             });
         }
 
-        function copiarParaSAP() {
-            let areaTexto = "";
-            const linhas = document.querySelectorAll("#tabelaFinal tbody tr");
+        function copiarTabela() {
+            let texto = "";
+            const linhas = document.querySelectorAll("#tabelaHoras tbody tr");
             
             linhas.forEach(linha => {
-                const td = linha.querySelectorAll("td");
-                // A formatação exata com TABS para colar no SAP
-                areaTexto += `${td[0].innerText}\t${td[1].innerText}\t\t\t\t\t\t\t\t\t${td[2].innerText}\t${td[3].innerText}\t${td[4].innerText}\t${td[5].innerText}\n`;
+                const colunas = linha.querySelectorAll("td");
+                texto += `${colunas[0].innerText}\t${colunas[1].innerText}\t\t\t\t\t\t\t\t\t${colunas[2].innerText}\t${colunas[4].innerText}\t${colunas[5].innerText}\n`;
             });
 
-            navigator.clipboard.writeText(areaTexto);
-            alert("Copiado! Agora é só colar no SAP.");
+            navigator.clipboard.writeText(texto).then(() => {
+                alert("Copiado para a área de transferência!");
+            });
         }
-
-        function limparTabela() {
-            document.querySelector("#tabelaFinal tbody").innerHTML = "";
-        }
-
-        // Data padrão de hoje
-        document.getElementById('campoData').valueAsDate = new Date();
     </script>
 </body>
 </html>
