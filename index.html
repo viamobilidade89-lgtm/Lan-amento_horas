@@ -3,233 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador de Lançamentos SAP - ZPM</title>
+    <title>Gerenciador de Lançamentos SAP</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; margin: 20px; color: #333; }
-        h1, h2 { text-align: center; color: #5E22F3; }
-        .container { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .filtros, .cadastro { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        h1, h2, h3 { text-align: center; color: #5E22F3; }
+        .container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .secao-acao { display: flex; flex-direction: column; gap: 15px; align-items: center; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .linha-input { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; justify-content: center; }
+        
         select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; transition: 0.3s; }
+        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; }
         button:hover { background-color: #4517b8; }
-        .btn-excluir { background-color: #d9534f; padding: 5px 8px; font-size: 12px; }
-        .btn-excluir:hover { background-color: #c9302c; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: white; border-radius: 5px; overflow: hidden; }
+        
+        .selecao-nomes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; width: 100%; margin-top: 15px; background: #f9f9f9; padding: 10px; border-radius: 5px; border: 1px dashed #5E22F3; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: white; }
         thead { background-color: #5E22F3; color: white; }
         th, td { padding: 10px; text-align: center; border-bottom: 1px solid #ddd; }
-        tr:hover { background-color: #f1f1f1; }
+        
         footer { text-align:center; padding:15px; color:white; background-color:#5E22F3; margin-top: 30px; border-radius: 8px; }
-        hr { border: 0; border-top: 1px solid #ddd; margin: 20px 0; }
-
-        .logo-sap {
-            width: 160px; height: 80px; margin: 0 auto 10px auto;
-            background-image: url("data:image/jpeg;base64,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");
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-        }
-
-        /* Estilo para os campos dinâmicos */
-        .selecao-dinamica {
-            background: #f9f9f9;
-            padding: 10px;
-            border: 1px dashed #5E22F3;
-            border-radius: 5px;
-            margin-top: 10px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
-        .item-selecao { display: flex; flex-direction: column; }
-        .item-selecao label { font-size: 11px; font-weight: bold; color: #5E22F3; }
     </style>
 </head>
 <body>
 
-    <div style="text-align: center; margin-bottom: 10px;">
-        <div class="logo-sap"></div>
-    </div>
-
     <h1>Gerenciador de Equipe SAP</h1>
 
-    <div class="container" style="border: 2px dashed #5E22F3;">
-        <h3>+ Adicionar Colaborador à Base</h3>
-        <div class="cadastro">
-            <input type="text" id="addNome" placeholder="NOME">
-            <input type="text" id="addRE" placeholder="RE (ex: 59-0000)">
-            <input type="text" id="addNumero" placeholder="Número">
-            <select id="addEquipe">
-                <option value="Energia">Energia</option>
-                <option value="Sinalização">Sinalização</option>
-                <option value="ALPHA">ALPHA</option>
-            </select>
-            <select id="addEscala">
-                <option value="Noturno">Noturno</option>
-                <option value="DIURNO">DIURNO</option>
-            </select>
-            <button onclick="adicionarNovoColaborador()">Salvar Colaborador</button>
+    <div class="container">
+        <h3>Passo 1: Definir Equipe</h3>
+        <div class="secao-acao">
+            <div class="linha-input">
+                <div>
+                    <label>Quantidade de Pessoas:</label><br>
+                    <input type="number" id="qtdPessoas" min="1" placeholder="Ex: 2">
+                </div>
+                <button onclick="gerarCamposSelecao()">Definir Quantidade</button>
+            </div>
+            <div id="containerNomes" class="selecao-nomes" style="display: none;"></div>
         </div>
     </div>
 
-    <hr>
-
     <div class="container">
-        <h2>Ordem de Operações</h2>
-        <form id="meuFormulario">
-            <div style="display: flex; gap: 15px; justify-content: center; align-items: flex-end; flex-wrap: wrap;">
+        <h3>Passo 2: Ordem e Operações</h3>
+        <div class="secao-acao">
+            <div class="linha-input">
                 <div>
-                    <label><strong>Número da Ordem:</strong></label><br>
-                    <input type="number" required id="numeroOrdem" placeholder="Digite a ordem">
+                    <label>Número da Ordem:</label><br>
+                    <input type="number" id="numeroOrdem" placeholder="Digite a ordem">
                 </div>
-                <div>
-                    <label><strong>Qtd. Executantes:</strong></label><br>
-                    <input type="number" id="qtdPessoas" min="1" placeholder="Ex: 2" oninput="gerarCamposExecutantes()">
-                </div>
-                <button type="submit">Adicionar Operação</button>
+                <button onclick="adicionarOperacao()">Adicionar Operação</button>
             </div>
 
-            <div id="containerExecutantes" class="selecao-dinamica" style="display: none;"></div>
-        </form>
+            <table id="tabelaOperacoes" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Operação</th>
+                        <th>Código</th>
+                        <th>Início (Data/Hora)</th>
+                        <th>Fim (Data/Hora)</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 
-        <table id="tabelaOperacoes">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <button id="btnGerar" style="padding: 15px 30px; font-size: 16px; background-color: #28a745;" onclick="processarLancamento()">GERAR LANÇAMENTO FINAL</button>
+        <button onclick="window.location.reload()" style="background-color: #6c757d;">Limpar Tudo</button>
+    </div>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Preview para Lançamento (ZPM)</h2>
+            <button onclick="copiarZPM()" style="background-color: #007bff;">Copiar para SAP</button>
+        </div>
+        <table id="tabelaLancto">
             <thead>
                 <tr>
-                    <th>Operação</th>
-                    <th>Código</th>
-                    <th>Data Início</th>
-                    <th>Hora Início</th>
-                    <th>Data Fim</th>
-                    <th>Hora Fim</th>
-                    <th>Ações</th>
+                    <th>Ordem</th><th>Cód.</th><th>Número</th><th>Data Iní.</th><th>Hora Iní.</th><th>Data Fim</th><th>Hora Fim</th><th>Confirmação</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
-    <div style="text-align: center; gap: 10px; display: flex; justify-content: center;">
-        <button id="criarTabela" style="display: none;" onclick="createTable()">Gerar Lançamento Final</button>
-        <button id="copiar" style="display: none;" onclick="copiarFormatoPersonalizado()">Copiar para SAP</button>
-        <button id="excluir" style="display: none;" onclick="excluirCorpo()">Limpar Tudo</button>
-    </div>
-
-    <table id="tabelaLancto">
-        <thead>
-            <tr>
-                <th>Ordem</th><th>Cód.</th><th>Número</th><th>Data Iní.</th><th>Hora Iní.</th><th>Data Fim</th><th>Hora Fim</th><th>Confirmação</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
     <footer>Criado por <strong>Lucas Santana</strong> - Equipe Sinalização © 2025</footer>
 
     <script>
-        const listaOriginal = [
-            {"nome":"ADRIANO","re":"59-01777","numero":"20579","equipe":"Energia","escala":"Noturno"},
-            {"nome":"ALEX","re":"59-02966","numero":"23097","equipe":"Energia","escala":"Noturno"},
-            {"nome":"BRUNO","re":"59-04951","numero":"19540","equipe":"Energia","escala":"Noturno"},
-            {"nome":"CLAUDEMIR","re":"59-01651","numero":"20651","equipe":"Energia","escala":"Noturno"},
-            {"nome":"EUDES","re":"59-03110","numero":"","equipe":"Energia","escala":"Noturno"},
-            {"nome":"GILMERSON","re":"59-02315","numero":"24056","equipe":"Energia","escala":"Noturno"},
-            {"nome":"GRACINO","re":"59-00447","numero":"20806","equipe":"Energia","escala":"Noturno"},
-            {"nome":"GREGÓRIO","re":"59-02738","numero":"","equipe":"Energia","escala":"Noturno"},
-            {"nome":"IAGO","re":"59-02975","numero":"23584","equipe":"Energia","escala":"Noturno"},
-            {"nome":"JAILSON","re":"59-03141","numero":"23924","equipe":"Energia","escala":"Noturno"},
-            {"nome":"JONE","re":"59-02967","numero":"24207","equipe":"Energia","escala":"Noturno"},
-            {"nome":"JUNIOR","re":"59-01825","numero":"20903","equipe":"Energia","escala":"Noturno"},
-            {"nome":"KAMILYN","re":"59-04350","numero":"24587","equipe":"Energia","escala":"Noturno"},
-            {"nome":"LEANDRO","re":"59-03077","numero":"14791","equipe":"Energia","escala":"Noturno"},
-            {"nome":"LUCIANO","re":"59-03444","numero":"23090","equipe":"Energia","escala":"Noturno"},
-            {"nome":"MARCELO","re":"59-02318","numero":"23672","equipe":"Energia","escala":"Noturno"},
-            {"nome":"PAULO","re":"59-01797","numero":"21031","equipe":"Energia","escala":"Noturno"},
-            {"nome":"RODRIGO","re":"59-02849","numero":"","equipe":"Energia","escala":"Noturno"},
-            {"nome":"RUTEMBERG","re":"59-00332","numero":"21096","equipe":"Energia","escala":"Noturno"},
-            {"nome":"SIDNEI","re":"59-03370","numero":"24520","equipe":"Energia","escala":"Noturno"},
-            {"nome":"VAGNER","re":"59-04500","numero":"24932","equipe":"Energia","escala":"Noturno"},
-            {"nome":"VALTER","re":"59-00793","numero":"21131","equipe":"Energia","escala":"Noturno"},
-            {"nome":"WILLIAM FAUSTO","re":"59-04340","numero":"24435","equipe":"Energia","escala":"Noturno"},
-            {"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589","equipe":"Energia","escala":"Noturno"}
+        const colaboradores = [
+            {"nome":"ADRIANO","re":"59-01777","numero":"20579"},
+            {"nome":"ALEX","re":"59-02966","numero":"23097"},
+            {"nome":"BRUNO","re":"59-04951","numero":"19540"},
+            {"nome":"CLAUDEMIR","re":"59-01651","numero":"20651"},
+            {"nome":"EUDES","re":"59-03110","numero":""},
+            {"nome":"GILMERSON","re":"59-02315","numero":"24056"},
+            {"nome":"GRACINO","re":"59-00447","numero":"20806"},
+            {"nome":"GREGÓRIO","re":"59-02738","numero":""},
+            {"nome":"IAGO","re":"59-02975","numero":"23584"},
+            {"nome":"JAILSON","re":"59-03141","numero":"23924"},
+            {"nome":"JONE","re":"59-02967","numero":"24207"},
+            {"nome":"JUNIOR","re":"59-01825","numero":"20903"},
+            {"nome":"KAMILYN","re":"59-04350","numero":"24587"},
+            {"nome":"LEANDRO","re":"59-03077","numero":"14791"},
+            {"nome":"LUCIANO","re":"59-03444","numero":"23090"},
+            {"nome":"MARCELO","re":"59-02318","numero":"23672"},
+            {"nome":"PAULO","re":"59-01797","numero":"21031"},
+            {"nome":"RODRIGO","re":"59-02849","numero":""},
+            {"nome":"RUTEMBERG","re":"59-00332","numero":"21096"},
+            {"nome":"SIDNEI","re":"59-03370","numero":"24520"},
+            {"nome":"VAGNER","re":"59-04500","numero":"24932"},
+            {"nome":"VALTER","re":"59-00793","numero":"21131"},
+            {"nome":"WILLIAM FAUSTO","re":"59-04340","numero":"24435"},
+            {"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589"}
+        ].sort((a,b) => a.nome.localeCompare(b.nome));
+
+        const opsBase = [
+            {n: "Preparação", c: "0010"}, {n: "Deslocamento", c: "0020"},
+            {n: "Acesso", c: "0030"}, {n: "Impedimento", c: "0040"},
+            {n: "Desmobilização", c: "0050"}, {n: "Execução", c: "0060"}
         ];
 
-        let colaboradores = JSON.parse(localStorage.getItem('db_colaboradores')) || listaOriginal;
-
-        const operacoes = [
-            { nome: "Preparação", codigo: "0010" },
-            { nome: "Deslocamento", codigo: "0020" },
-            { nome: "Acesso", codigo: "0030" },
-            { nome: "Impedimento", codigo: "0040" },
-            { nome: "Desmobilização", codigo: "0050" },
-            { nome: "Execução", codigo: "0060" }
-        ];
-
-        // FUNÇÃO NOVA: Gera os dropdowns conforme a quantidade digitada
-        function gerarCamposExecutantes() {
+        // FUNÇÃO DO BOTÃO 1
+        function gerarCamposSelecao() {
             const qtd = document.getElementById('qtdPessoas').value;
-            const container = document.getElementById('containerExecutantes');
+            const container = document.getElementById('containerNomes');
             container.innerHTML = "";
+            if (qtd < 1) return alert("Digite uma quantidade válida.");
 
-            if (qtd > 0) {
-                container.style.display = "grid";
-                // Ordena lista por nome para facilitar busca
-                const listaSorted = [...colaboradores].sort((a,b) => a.nome.localeCompare(b.nome));
-
-                for (let i = 1; i <= qtd; i++) {
-                    const div = document.createElement('div');
-                    div.className = "item-selecao";
-                    
-                    let options = `<option value="">Escolha o Executante ${i}</option>`;
-                    listaSorted.forEach(c => {
-                        options += `<option value="${c.re}">${c.nome} (${c.re})</option>`;
-                    });
-
-                    div.innerHTML = `<label>EXECUTANTE ${i}</label><select class="sel-executante" required>${options}</select>`;
-                    container.appendChild(div);
-                }
-            } else {
-                container.style.display = "none";
+            container.style.display = "grid";
+            for (let i = 1; i <= qtd; i++) {
+                let options = `<option value="">Selecione o Colaborador ${i}</option>`;
+                colaboradores.forEach(c => {
+                    options += `<option value="${c.re}">${c.nome} (${c.re})</option>`;
+                });
+                container.innerHTML += `<div style="display:flex; flex-direction:column;"><label style="font-size:10px">Pessoa ${i}</label><select class="sel-re">${options}</select></div>`;
             }
         }
 
-        function salvarNoBanco() {
-            localStorage.setItem('db_colaboradores', JSON.stringify(colaboradores));
-        }
+        // FUNÇÃO DO BOTÃO 2
+        function adicionarOperacao() {
+            const ord = document.getElementById('numeroOrdem').value;
+            if (!ord) return alert("Digite o número da Ordem primeiro.");
 
-        function adicionarNovoColaborador() {
-            const nome = document.getElementById('addNome').value.toUpperCase();
-            const re = document.getElementById('addRE').value;
-            const num = document.getElementById('addNumero').value;
-            const eq = document.getElementById('addEquipe').value;
-            const esc = document.getElementById('addEscala').value;
-
-            if(!nome || !re) return alert("Preencha Nome e RE");
-
-            colaboradores.push({nome, re, numero: num, equipe: eq, escala: esc});
-            salvarNoBanco();
-            alert("Colaborador salvo na base!");
-            document.getElementById('addNome').value = "";
-            document.getElementById('addRE').value = "";
-            document.getElementById('addNumero').value = "";
-            gerarCamposExecutantes(); // Atualiza os selects se estiverem abertos
-        }
-
-        document.getElementById('meuFormulario').addEventListener('submit', function(e) {
-            e.preventDefault();
             const tbody = document.querySelector("#tabelaOperacoes tbody");
             const tr = document.createElement("tr");
-            const selOp = document.createElement("select");
-            operacoes.forEach(o => { selOp.innerHTML += `<option value="${o.codigo}">${o.nome} (${o.codigo})</option>`; });
+            
+            let optOps = "";
+            opsBase.forEach(o => { optOps += `<option value="${o.c}">${o.n} (${o.c})</option>`; });
 
-            let local = new Date();
-            local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
-            const data = local.toJSON().slice(0,10);
+            let hoje = new Date().toISOString().slice(0,10);
 
             tr.innerHTML = `
-                <td></td><td class="c-op"></td>
-                <td><input type="date" value="${data}"></td>
-                <td><input type="time" required></td>
-                <td><input type="date" value="${data}"></td>
-                <td><input type="time" required></td>
-                <td><button type="button" onclick="this.closest('tr').remove()">Remover</button></td>
-                <td style="display:none">${document.getElementById("numeroOrdem").value}</td>
+                <td><select class="row-cod-op">${optOps}</select></td>
+                <td class="display-cod">${opsBase[0].c}</td>
+                <td><input type="date" value="${hoje}"> <input type="time" class="h-ini"></td>
+                <td><input type="date" value="${hoje}"> <input type="time" class="h-fim"></td>
+                <td><button onclick="this.closest('tr').remove()" style="background:#d9534f">X</button></td>
+                <td style="display:none" class="row-ordem">${ord}</td>
             `;
-            tr.children[0].appendChild(selOp);
-    
+            
+            const sel = tr.querySelector('.row-cod-op');
+            sel.onchange = () => tr.querySelector('.display-cod').textContent = sel.value;
+            
+            tbody.appendChild(tr);
+        }
+
+        // GERAÇÃO FINAL
+        function processarLancamento() {
+            const resSelecionados = Array.from(document.querySelectorAll('.sel-re')).map(s => s.value).filter(v => v !== "");
+            if (resSelecionados.length === 0) return alert("Selecione os colaboradores no Passo 1.");
+
+            const opsRows = document.querySelectorAll("#tabelaOperacoes tbody tr");
+            if (opsRows.length === 0) return alert("Adicione pelo menos uma operação no Passo 2.");
+
+            const tbodyFinal = document.querySelector("#tabelaLancto tbody");
+            tbodyFinal.innerHTML = "";
+
+            opsRows.forEach(row => {
+                const ordem = row.querySelector('.row-ordem').textContent;
+                const cod = row.querySelector('.row-cod-op').value;
+                const dataIn = row.querySelectorAll('input[type="date"]')[0].value.split("-").reverse().join(".");
+                const dataFim = row.querySelectorAll('input[type="date"]')[1].value.split("-").reverse().join(".");
+                const hIn = row.querySelector('.h-ini').value;
+                const hFim = row.querySelector('.h-fim').value;
+
+                if(!hIn || !hFim) return;
+
+                resSelecionados.forEach(re => {
+                    const p = colaboradores.find(c => c.re === re);
+                    const tr = document.createElement("tr");
+                    let obs = p.numero === "" ? `${p.nome} ${p.re}` : "";
+                    tr.innerHTML = `<td>${ordem}</td><td>${cod}</td><td>${p.numero}</td><td>${dataIn}</td><td>${hIn}:00</td><td>${dataFim}</td><td>${hFim}:00</td><td>${obs}</td>`;
+                    tbodyFinal.appendChild(tr);
+                });
+            });
+        }
+
+        function copiarZPM() {
+            let texto = "";
+            document.querySelectorAll("#tabelaLancto tbody tr").forEach(linha => {
+                const col = linha.querySelectorAll("td");
+                const ord = col[0].textContent;
+                const cod = col[1].textContent;
+                const dados = Array.from(col).slice(2, 7).map(c => c.textContent);
+                const conf = col[7].textContent;
+                // Formato tabulado para o SAP
+                texto += `${ord}\t${cod}${"\t".repeat(8)}${dados.join("\t")}\t\t${conf}\n`;
+            });
+            navigator.clipboard.writeText(texto).then(() => alert("Copiado! Basta colar no SAP."));
+        }
+    </script>
+</body>
+</html>
