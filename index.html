@@ -5,15 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador SAP - Sinalização</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; margin: 20px; color: #333; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; margin: 20px; color: #333; position: relative; }
         h1, h3 { text-align: center; color: #5E22F3; }
+        
+        /* Efeito do Relâmpago */
+        .raio-container {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 50px;
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFD700;
+            animation: relampago 3s infinite;
+            z-index: 1000;
+        }
+
+        @keyframes relampago {
+            0%, 90%, 100% { opacity: 0.3; text-shadow: 0 0 5px #FFD700; }
+            92% { opacity: 1; text-shadow: 0 0 30px #FFF, 0 0 50px #FFD700; }
+            94% { opacity: 0.5; }
+            96% { opacity: 1; text-shadow: 0 0 40px #FFF, 0 0 60px #FFD700; }
+        }
+
         .container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .secao-acao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         .linha-input { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; justify-content: center; margin-bottom: 10px; }
         select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; }
         button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; }
         button:hover { background-color: #4517b8; }
-        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: #f0f0f0; border-radius: 5px; border: 1px dashed #5E22F3; }
+        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: #f0f0f0; border-radius: 5px; border: 1px dashed #5E22F3; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
         thead { background-color: #5E22F3; color: white; }
         th, td { padding: 8px; text-align: center; border: 1px solid #ddd; }
@@ -23,15 +43,17 @@
 </head>
 <body>
 
+    <div class="raio-container">⚡</div>
+
     <h1>Gerenciador de Equipe SAP</h1>
 
     <div class="container">
-        <h3>1. Cadastrar Novo Colaborador na Base</h3>
+        <h3>1. Cadastrar Novo Colaborador</h3>
         <div class="secao-acao">
             <div class="linha-input">
                 <input type="text" id="cadNome" placeholder="Nome Completo">
                 <input type="text" id="cadRE" placeholder="RE (Ex: 59-0000)">
-                <input type="text" id="cadSAP" placeholder="Número SAP (se tiver)">
+                <input type="text" id="cadSAP" placeholder="Nº SAP">
                 <button onclick="salvarColaborador()">Salvar na Base</button>
             </div>
         </div>
@@ -64,11 +86,7 @@
             <table id="tabOperacoes">
                 <thead>
                     <tr>
-                        <th>Nome da Operação</th>
-                        <th>Cód.</th>
-                        <th>Início (Data/Hora)</th>
-                        <th>Fim (Data/Hora)</th>
-                        <th>Ação</th>
+                        <th>Operação</th><th>Cód.</th><th>Início</th><th>Fim</th><th>Ação</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -76,11 +94,11 @@
         </div>
     </div>
 
-    <button class="btn-gerar" onclick="processarFinal()">GERAR PLANILHA FINAL PARA ZPM</button>
+    <button class="btn-gerar" onclick="processarFinal()">GERAR PLANILHA PARA ZPM</button>
 
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <h2>Preview para Lançamento</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Preview ZPM</h2>
             <button style="background-color: #007bff; padding: 12px;" onclick="copiarZPM()">Copiar Dados para o SAP</button>
         </div>
         <table id="tabFinal">
@@ -96,7 +114,6 @@
     <footer>Equipe Sinalização © 2025</footer>
 
 <script>
-    // Base de dados inicial preservada
     const baseColab = [
         {"nome":"ADRIANO","re":"59-01777","numero":"20579"},
         {"nome":"ALEX","re":"59-02966","numero":"23097"},
@@ -124,7 +141,7 @@
         {"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589"}
     ];
 
-    let db = JSON.parse(localStorage.getItem('db_sinaliza_v2')) || baseColab;
+    let db = JSON.parse(localStorage.getItem('db_sinaliza_v5')) || baseColab;
 
     const todasAsOps = [
         {n: "Preparação", c: "0010"}, {n: "Deslocamento", c: "0020"},
@@ -138,10 +155,10 @@
         const n = document.getElementById('cadNome').value.toUpperCase();
         const r = document.getElementById('cadRE').value;
         const s = document.getElementById('cadSAP').value;
-        if(!n || !r) return alert("Preencha ao menos Nome e RE.");
+        if(!n || !r) return alert("Nome e RE são obrigatórios.");
         db.push({nome: n, re: r, numero: s});
-        localStorage.setItem('db_sinaliza_v2', JSON.stringify(db));
-        alert("Cadastrado com sucesso!");
+        localStorage.setItem('db_sinaliza_v5', JSON.stringify(db));
+        alert("Colaborador salvo!");
         location.reload();
     }
 
@@ -162,7 +179,7 @@
 
     function addOperacao() {
         const ord = document.getElementById('numOrdem').value;
-        if(!ord) return alert("Informe o número da Ordem primeiro.");
+        if(!ord) return alert("Informe a Ordem.");
         const tbody = document.querySelector("#tabOperacoes tbody");
         const tr = document.createElement("tr");
         let opsHTML = todasAsOps.map(o => `<option value="${o.c}">${o.n}</option>`).join('');
@@ -187,7 +204,7 @@
         const selecionados = Array.from(document.querySelectorAll('.sel-re')).map(s => s.value).filter(v => v !== "");
         const rows = document.querySelectorAll("#tabOperacoes tbody tr");
 
-        if(selecionados.length === 0 || rows.length === 0) return alert("Preencha a equipe e as operações.");
+        if(selecionados.length === 0 || rows.length === 0) return alert("Verifique equipe e operações.");
 
         rows.forEach(row => {
             const ordem = row.querySelector('.hidden-ordem').textContent;
@@ -200,7 +217,6 @@
             selecionados.forEach(re => {
                 const p = db.find(c => c.re === re);
                 const tr = document.createElement("tr");
-                // SE O NÚMERO SAP FOR VAZIO, COLOCA "UNKNOWN"
                 let txtConf = p.numero === "" ? `UNKNOWN: ${p.nome} ${p.re}` : "";
                 tr.innerHTML = `<td>${ordem}</td><td>${cod}</td><td>${p.numero}</td><td>${dtIni}</td><td>${hrIni}:00</td><td>${dtFim}</td><td>${hrFim}:00</td><td>${txtConf}</td>`;
                 resBody.appendChild(tr);
@@ -213,10 +229,9 @@
         const linhas = document.querySelectorAll("#tabFinal tbody tr");
         linhas.forEach(tr => {
             const c = Array.from(tr.querySelectorAll("td")).map(td => td.textContent.trim());
-            // Formato ZPM: Ordem [TAB] Código [TAB x 8] Número [TAB] DataI [TAB] HoraI [TAB] DataF [TAB] HoraF [TAB x 2] Confirmação
             texto += `${c[0]}\t${c[1]}${"\t".repeat(8)}${c[2]}\t${c[3]}\t${c[4]}\t${c[5]}\t${c[6]}\t\t${c[7]}\n`;
         });
-        navigator.clipboard.writeText(texto).then(() => alert("Copiado! Agora cole na ZPM."));
+        navigator.clipboard.writeText(texto).then(() => alert("Copiado!"));
     }
 </script>
 </body>
