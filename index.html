@@ -3,64 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador SAP - High Voltage Edition</title>
+    <title>Gerenciador SAP - Light Edition</title>
     <style>
-        /* Efeito de Relâmpago em Subestação - Fundo */
+        /* Fundo de Subestação mais claro e visível */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 20px; 
             color: #333; 
-            background-color: #030307; /* Fundo escuro profundo */
-            /* Imagem de Subestação de Alta Tensão à Noite */
-            background-image: url('https://images.unsplash.com/photo-1541818166-70e67d2ca88d?q=80&w=1920&auto=format&fit=crop');
+            background-color: #f0f2f5; 
+            /* Imagem de Subestação com ajuste de brilho */
+            background-image: linear-gradient(rgba(240, 242, 245, 0.4), rgba(240, 242, 245, 0.4)), 
+                              url('https://images.unsplash.com/photo-1541818166-70e67d2ca88d?q=80&w=1920&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            position: relative;
-            animation: relampago-subestacao 10s infinite; /* Ciclo do relâmpago mais lento */
+            animation: clarao-suave 12s infinite; 
         }
 
-        /* Animação que ilumina a subestação súbitamente */
-        @keyframes relampago-subestacao {
-            0%, 96%, 100% { filter: brightness(0.3) contrast(1.1) saturate(0.8); } /* Estado escuro operacional */
-            97% { filter: brightness(2.5) contrast(1.4) saturate(1.2); } /* Primeiro Clarão */
-            98% { filter: brightness(0.6); }
-            99% { filter: brightness(3.5) contrast(1.8) saturate(1.5); } /* Segundo Clarão (mais forte) */
+        /* Animação de clarão mais discreta para não escurecer a tela */
+        @keyframes clarao-suave {
+            0%, 90%, 100% { filter: brightness(1) contrast(1); } 
+            92% { filter: brightness(1.8) contrast(1.2); } /* O "raio" ilumina mais a cena */
+            94% { filter: brightness(1.2); }
+            95% { filter: brightness(2) contrast(1.3); } 
         }
 
-        h1, h3 { text-align: center; color: #5E22F3; text-shadow: 0 0 15px rgba(255,255,255,0.4); }
+        h1, h3 { text-align: center; color: #5E22F3; text-shadow: 1px 1px 3px rgba(255,255,255,0.8); }
         
-        /* Containers com transparência muito baixa para máxima legibilidade (95% sólido) */
+        /* Containers quase 100% sólidos para preenchimento perfeito */
         .container { 
-            background-color: rgba(255, 255, 255, 0.95); 
+            background-color: rgba(255, 255, 255, 0.98); 
             padding: 20px; 
             border-radius: 12px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
             margin-bottom: 20px; 
-            backdrop-filter: blur(2px); /* Levíssimo desfoque */
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.2s;
+            border: 1px solid #eee;
         }
 
-        .secao-acao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: rgba(255,255,255,0.3); }
+        .secao-acao { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
         .linha-input { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; justify-content: center; margin-bottom: 10px; }
         
-        select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; background: rgba(255,255,255,0.9); }
+        select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:hover { background-color: #4517b8; box-shadow: 0 3px 10px rgba(94, 34, 243, 0.3); }
         
-        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
-        button:hover { background-color: #4517b8; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(94, 34, 243, 0.5); }
+        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 5px; border: 1px dashed #5E22F3; }
         
-        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: rgba(240, 240, 240, 0.9); border-radius: 5px; border: 1px dashed #5E22F3; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: white; }
         thead { background-color: #5E22F3; color: white; }
-        th, td { padding: 10px; text-align: center; border: 1px solid #ddd; }
-        tr:hover { background-color: #f1f1f1; }
+        th, td { padding: 10px; text-align: center; border: 1px solid #eee; }
         
-        .btn-gerar { background-color: #28a745; width: 100%; padding: 18px; font-size: 19px; margin-top: 10px; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
-        .btn-gerar:hover { background-color: #218838; box-shadow: 0 5px 20px rgba(40, 167, 69, 0.5); }
-        
-        footer { text-align:center; padding:15px; color:white; background-color: rgba(94, 34, 243, 0.95); margin-top: 30px; border-radius: 8px; font-weight: bold; font-size: 14px; }
+        .btn-gerar { background-color: #28a745; width: 100%; padding: 16px; font-size: 18px; margin-top: 10px; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        footer { text-align:center; padding:15px; color:white; background-color: #5E22F3; margin-top: 30px; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -74,7 +68,7 @@
                 <input type="text" id="cadNome" placeholder="Nome Completo">
                 <input type="text" id="cadRE" placeholder="RE (Ex: 59-0000)">
                 <input type="text" id="cadSAP" placeholder="Nº SAP">
-                <button onclick="salvarColaborador()">Salvar na Base</button>
+                <button onclick="salvarColaborador()">Salvar</button>
             </div>
         </div>
     </div>
@@ -91,7 +85,7 @@
     </div>
 
     <div class="container">
-        <h3>3. Ordem e Operações (0010 a 0090)</h3>
+        <h3>3. Ordem e Operações</h3>
         <div class="secao-acao">
             <div class="linha-input">
                 <input type="number" id="numOrdem" placeholder="Nº da Ordem">
@@ -111,7 +105,7 @@
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h2>Preview ZPM</h2>
-            <button style="background-color: #007bff; padding: 12px; color: white; border:none; border-radius:5px; font-weight: bold;" onclick="copiarZPM()">Copiar para o SAP</button>
+            <button style="background-color: #007bff; padding: 10px; color: white; border:none; border-radius:5px;" onclick="copiarZPM()">Copiar Dados</button>
         </div>
         <table id="tabFinal">
             <thead>
@@ -124,7 +118,6 @@
     <footer>Equipe Sinalização © 2025</footer>
 
 <script>
-    // Base de dados completa v6 preservada
     const baseColab = [
         {"nome":"ADRIANO","re":"59-01777","numero":"20579"},{"nome":"ALEX","re":"59-02966","numero":"23097"},
         {"nome":"BRUNO","re":"59-04951","numero":"19540"},{"nome":"CLAUDEMIR","re":"59-01651","numero":"20651"},
@@ -140,7 +133,7 @@
         {"nome":"WILLIAM FAUSTO","re":"59-04340","numero":"24435"},{"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589"}
     ];
 
-    let db = JSON.parse(localStorage.getItem('db_sinaliza_v6')) || baseColab;
+    let db = JSON.parse(localStorage.getItem('db_sinaliza_v7')) || baseColab;
 
     const todasAsOps = [
         {n: "Preparação", c: "0010"}, {n: "Deslocamento", c: "0020"},
@@ -154,20 +147,20 @@
         const n = document.getElementById('cadNome').value.toUpperCase();
         const r = document.getElementById('cadRE').value;
         const s = document.getElementById('cadSAP').value;
-        if(!n || !r) return alert("Nome e RE obrigatórios.");
+        if(!n || !r) return alert("Nome e RE são necessários.");
         db.push({nome: n, re: r, numero: s});
-        localStorage.setItem('db_sinaliza_v6', JSON.stringify(db));
+        localStorage.setItem('db_sinaliza_v7', JSON.stringify(db));
         location.reload();
     }
 
     function gerarCamposSelecao() {
         const qtd = document.getElementById('qtdEquipe').value;
         const area = document.getElementById('areaSelecao');
-        if(qtd < 1) return alert("Informe a Qtd.");
+        if(qtd < 1) return;
         area.innerHTML = ""; area.style.display = "grid";
         db.sort((a,b) => a.nome.localeCompare(b.nome));
         for(let i=1; i<=qtd; i++) {
-            let opts = `<option value="">-- Selecionar Colaborador ${i} --</option>`;
+            let opts = `<option value="">-- Selecionar ${i} --</option>`;
             db.forEach(c => { opts += `<option value="${c.re}">${c.nome} (${c.re})</option>`; });
             area.innerHTML += `<div><select class="sel-re">${opts}</select></div>`;
         }
@@ -218,12 +211,11 @@
 
     function copiarZPM() {
         let texto = "";
-        const linhas = document.querySelectorAll("#tabFinal tbody tr");
-        linhas.forEach(tr => {
+        document.querySelectorAll("#tabFinal tbody tr").forEach(tr => {
             const c = Array.from(tr.querySelectorAll("td")).map(td => td.textContent.trim());
             texto += `${c[0]}\t${c[1]}${"\t".repeat(8)}${c[2]}\t${c[3]}\t${c[4]}\t${c[5]}\t${c[6]}\t\t${c[7]}\n`;
         });
-        navigator.clipboard.writeText(texto).then(() => alert("Copiado com sucesso!"));
+        navigator.clipboard.writeText(texto).then(() => alert("Copiado!"));
     }
 </script>
 </body>
