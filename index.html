@@ -3,61 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador SAP - Storm Edition</title>
+    <title>Gerenciador SAP - High Voltage Edition</title>
     <style>
-        /* Efeito de Relâmpago Realista no Fundo */
+        /* Efeito de Relâmpago em Subestação - Fundo */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 20px; 
             color: #333; 
-            background-color: #05050a; /* Fundo quase preto para contraste */
-            background-image: url('https://images.unsplash.com/photo-1605723517503-3cadb5818a0c?q=80&w=1920&auto=format&fit=crop');
+            background-color: #030307; /* Fundo escuro profundo */
+            /* Imagem de Subestação de Alta Tensão à Noite */
+            background-image: url('https://images.unsplash.com/photo-1541818166-70e67d2ca88d?q=80&w=1920&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             position: relative;
-            animation: relampago-anim 8s infinite; /* Ciclo do relâmpago */
+            animation: relampago-subestacao 10s infinite; /* Ciclo do relâmpago mais lento */
         }
 
-        /* Animação que cria o clarão */
-        @keyframes relampago-anim {
-            0%, 95%, 100% { filter: brightness(0.4) contrast(1); } /* Estado escuro normal */
-            96% { filter: brightness(3) contrast(1.5); } /* Primeiro Clarão */
-            97% { filter: brightness(0.8); }
-            98% { filter: brightness(4) contrast(2); } /* Segundo Clarão (mais forte) */
-            99% { filter: brightness(1.2); }
+        /* Animação que ilumina a subestação súbitamente */
+        @keyframes relampago-subestacao {
+            0%, 96%, 100% { filter: brightness(0.3) contrast(1.1) saturate(0.8); } /* Estado escuro operacional */
+            97% { filter: brightness(2.5) contrast(1.4) saturate(1.2); } /* Primeiro Clarão */
+            98% { filter: brightness(0.6); }
+            99% { filter: brightness(3.5) contrast(1.8) saturate(1.5); } /* Segundo Clarão (mais forte) */
         }
 
         h1, h3 { text-align: center; color: #5E22F3; text-shadow: 0 0 15px rgba(255,255,255,0.4); }
         
-        /* Containers com transparência para ver o fundo */
+        /* Containers com transparência muito baixa para máxima legibilidade (95% sólido) */
         .container { 
-            background-color: rgba(255, 255, 255, 0.85); 
+            background-color: rgba(255, 255, 255, 0.95); 
             padding: 20px; 
             border-radius: 12px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
             margin-bottom: 20px; 
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(2px); /* Levíssimo desfoque */
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.2s;
         }
 
-        .secao-acao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: rgba(255,255,255,0.4); }
+        .secao-acao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: rgba(255,255,255,0.3); }
         .linha-input { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; justify-content: center; margin-bottom: 10px; }
         
-        select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        button:hover { background-color: #4517b8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(94, 34, 243, 0.4); }
+        select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; background: rgba(255,255,255,0.9); }
         
-        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: rgba(240, 240, 240, 0.8); border-radius: 5px; border: 1px dashed #5E22F3; }
+        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        button:hover { background-color: #4517b8; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(94, 34, 243, 0.5); }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: white; border-radius: 8px; overflow: hidden; }
+        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: rgba(240, 240, 240, 0.9); border-radius: 5px; border: 1px dashed #5E22F3; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         thead { background-color: #5E22F3; color: white; }
         th, td { padding: 10px; text-align: center; border: 1px solid #ddd; }
+        tr:hover { background-color: #f1f1f1; }
         
-        .btn-gerar { background-color: #28a745; width: 100%; padding: 15px; font-size: 18px; margin-top: 10px; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .btn-gerar:hover { background-color: #218838; }
+        .btn-gerar { background-color: #28a745; width: 100%; padding: 18px; font-size: 19px; margin-top: 10px; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .btn-gerar:hover { background-color: #218838; box-shadow: 0 5px 20px rgba(40, 167, 69, 0.5); }
         
-        footer { text-align:center; padding:15px; color:white; background-color: rgba(94, 34, 243, 0.9); margin-top: 30px; border-radius: 8px; font-weight: bold; }
+        footer { text-align:center; padding:15px; color:white; background-color: rgba(94, 34, 243, 0.95); margin-top: 30px; border-radius: 8px; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -108,7 +111,7 @@
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h2>Preview ZPM</h2>
-            <button style="background-color: #007bff; padding: 12px; color: white; border:none; border-radius:5px;" onclick="copiarZPM()">Copiar para o SAP</button>
+            <button style="background-color: #007bff; padding: 12px; color: white; border:none; border-radius:5px; font-weight: bold;" onclick="copiarZPM()">Copiar para o SAP</button>
         </div>
         <table id="tabFinal">
             <thead>
@@ -121,6 +124,7 @@
     <footer>Equipe Sinalização © 2025</footer>
 
 <script>
+    // Base de dados completa v6 preservada
     const baseColab = [
         {"nome":"ADRIANO","re":"59-01777","numero":"20579"},{"nome":"ALEX","re":"59-02966","numero":"23097"},
         {"nome":"BRUNO","re":"59-04951","numero":"19540"},{"nome":"CLAUDEMIR","re":"59-01651","numero":"20651"},
@@ -150,7 +154,7 @@
         const n = document.getElementById('cadNome').value.toUpperCase();
         const r = document.getElementById('cadRE').value;
         const s = document.getElementById('cadSAP').value;
-        if(!n || !r) return alert("Nome e RE são obrigatórios.");
+        if(!n || !r) return alert("Nome e RE obrigatórios.");
         db.push({nome: n, re: r, numero: s});
         localStorage.setItem('db_sinaliza_v6', JSON.stringify(db));
         location.reload();
@@ -159,7 +163,7 @@
     function gerarCamposSelecao() {
         const qtd = document.getElementById('qtdEquipe').value;
         const area = document.getElementById('areaSelecao');
-        if(qtd < 1) return;
+        if(qtd < 1) return alert("Informe a Qtd.");
         area.innerHTML = ""; area.style.display = "grid";
         db.sort((a,b) => a.nome.localeCompare(b.nome));
         for(let i=1; i<=qtd; i++) {
@@ -214,11 +218,12 @@
 
     function copiarZPM() {
         let texto = "";
-        document.querySelectorAll("#tabFinal tbody tr").forEach(tr => {
+        const linhas = document.querySelectorAll("#tabFinal tbody tr");
+        linhas.forEach(tr => {
             const c = Array.from(tr.querySelectorAll("td")).map(td => td.textContent.trim());
             texto += `${c[0]}\t${c[1]}${"\t".repeat(8)}${c[2]}\t${c[3]}\t${c[4]}\t${c[5]}\t${c[6]}\t\t${c[7]}\n`;
         });
-        navigator.clipboard.writeText(texto).then(() => alert("Copiado com sucesso para a área de transferência!"));
+        navigator.clipboard.writeText(texto).then(() => alert("Copiado com sucesso!"));
     }
 </script>
 </body>
