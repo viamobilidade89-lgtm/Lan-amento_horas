@@ -3,58 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador SAP - Light Edition</title>
+    <title>Gerenciador SAP - Subestação Edition</title>
     <style>
-        /* Fundo de Subestação mais claro e visível */
+        /* Fundo com imagem de Subestação Realista */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 20px; 
             color: #333; 
-            background-color: #f0f2f5; 
-            /* Imagem de Subestação com ajuste de brilho */
-            background-image: linear-gradient(rgba(240, 242, 245, 0.4), rgba(240, 242, 245, 0.4)), 
-                              url('https://images.unsplash.com/photo-1541818166-70e67d2ca88d?q=80&w=1920&auto=format&fit=crop');
+            /* Camada de cor para garantir legibilidade + Imagem da Subestação */
+            background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
+                        url('https://images.unsplash.com/photo-1558444479-c84826027ec2?q=80&w=1920&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            animation: clarao-suave 12s infinite; 
+            animation: relampago-sub 10s infinite; 
         }
 
-        /* Animação de clarão mais discreta para não escurecer a tela */
-        @keyframes clarao-suave {
-            0%, 90%, 100% { filter: brightness(1) contrast(1); } 
-            92% { filter: brightness(1.8) contrast(1.2); } /* O "raio" ilumina mais a cena */
-            94% { filter: brightness(1.2); }
-            95% { filter: brightness(2) contrast(1.3); } 
+        /* Animação de clarão/trovão que ilumina a subestação */
+        @keyframes relampago-sub {
+            0%, 94%, 100% { filter: brightness(1); } 
+            95% { filter: brightness(2.5) contrast(1.2); } 
+            97% { filter: brightness(1.2); }
+            98% { filter: brightness(2.8) contrast(1.4); } 
         }
 
-        h1, h3 { text-align: center; color: #5E22F3; text-shadow: 1px 1px 3px rgba(255,255,255,0.8); }
+        h1, h3 { text-align: center; color: #5E22F3; text-shadow: 2px 2px 4px rgba(255,255,255,0.9); }
         
-        /* Containers quase 100% sólidos para preenchimento perfeito */
+        /* Containers brancos quase sólidos (97%) para foco total nos dados */
         .container { 
-            background-color: rgba(255, 255, 255, 0.98); 
+            background-color: rgba(255, 255, 255, 0.97); 
             padding: 20px; 
             border-radius: 12px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
             margin-bottom: 20px; 
-            border: 1px solid #eee;
+            border: 1px solid #ddd;
         }
 
         .secao-acao { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
         .linha-input { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; justify-content: center; margin-bottom: 10px; }
         
         select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        button:hover { background-color: #4517b8; box-shadow: 0 3px 10px rgba(94, 34, 243, 0.3); }
+        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background-color: #4517b8; transform: scale(1.02); }
         
-        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 5px; border: 1px dashed #5E22F3; }
+        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 5px; border: 1px dashed #5E22F3; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: white; }
         thead { background-color: #5E22F3; color: white; }
         th, td { padding: 10px; text-align: center; border: 1px solid #eee; }
         
         .btn-gerar { background-color: #28a745; width: 100%; padding: 16px; font-size: 18px; margin-top: 10px; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        footer { text-align:center; padding:15px; color:white; background-color: #5E22F3; margin-top: 30px; border-radius: 8px; }
+        .btn-gerar:hover { background-color: #218838; box-shadow: 0 4px 15px rgba(40,167,69,0.4); }
+        
+        footer { text-align:center; padding:15px; color:white; background-color: #5E22F3; margin-top: 30px; border-radius: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -68,7 +69,7 @@
                 <input type="text" id="cadNome" placeholder="Nome Completo">
                 <input type="text" id="cadRE" placeholder="RE (Ex: 59-0000)">
                 <input type="text" id="cadSAP" placeholder="Nº SAP">
-                <button onclick="salvarColaborador()">Salvar</button>
+                <button onclick="salvarColaborador()">Salvar Colaborador</button>
             </div>
         </div>
     </div>
@@ -100,12 +101,12 @@
         </div>
     </div>
 
-    <button class="btn-gerar" onclick="processarFinal()">GERAR PLANILHA PARA ZPM</button>
+    <button class="btn-gerar" onclick="processarFinal()">GERAR PLANILHA FINAL</button>
 
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h2>Preview ZPM</h2>
-            <button style="background-color: #007bff; padding: 10px; color: white; border:none; border-radius:5px;" onclick="copiarZPM()">Copiar Dados</button>
+            <button style="background-color: #007bff; padding: 12px; color: white; border:none; border-radius:5px;" onclick="copiarZPM()">Copiar para o SAP</button>
         </div>
         <table id="tabFinal">
             <thead>
@@ -115,7 +116,7 @@
         </table>
     </div>
 
-    <footer>Equipe Sinalização © 2025</footer>
+    <footer>Equipe Sinalização © 2026</footer>
 
 <script>
     const baseColab = [
@@ -133,7 +134,7 @@
         {"nome":"WILLIAM FAUSTO","re":"59-04340","numero":"24435"},{"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589"}
     ];
 
-    let db = JSON.parse(localStorage.getItem('db_sinaliza_v7')) || baseColab;
+    let db = JSON.parse(localStorage.getItem('db_sinaliza_v_final')) || baseColab;
 
     const todasAsOps = [
         {n: "Preparação", c: "0010"}, {n: "Deslocamento", c: "0020"},
@@ -147,9 +148,9 @@
         const n = document.getElementById('cadNome').value.toUpperCase();
         const r = document.getElementById('cadRE').value;
         const s = document.getElementById('cadSAP').value;
-        if(!n || !r) return alert("Nome e RE são necessários.");
+        if(!n || !r) return alert("Preencha Nome e RE.");
         db.push({nome: n, re: r, numero: s});
-        localStorage.setItem('db_sinaliza_v7', JSON.stringify(db));
+        localStorage.setItem('db_sinaliza_v_final', JSON.stringify(db));
         location.reload();
     }
 
@@ -215,7 +216,7 @@
             const c = Array.from(tr.querySelectorAll("td")).map(td => td.textContent.trim());
             texto += `${c[0]}\t${c[1]}${"\t".repeat(8)}${c[2]}\t${c[3]}\t${c[4]}\t${c[5]}\t${c[6]}\t\t${c[7]}\n`;
         });
-        navigator.clipboard.writeText(texto).then(() => alert("Copiado!"));
+        navigator.clipboard.writeText(texto).then(() => alert("Dados copiados para a ZPM!"));
     }
 </script>
 </body>
