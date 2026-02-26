@@ -1,59 +1,68 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador SAP - Sinalização Atmosférico</title>
+    <title>Gerenciador SAP - Storm Edition</title>
     <style>
+        /* Efeito de Relâmpago Realista no Fundo */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
-            background-color: #f4f6f8; 
             margin: 20px; 
             color: #333; 
-            position: relative;
-            /* Imagem de fundo realista com transparência */
-            background-image: linear-gradient(rgba(244, 246, 248, 0.85), rgba(244, 246, 248, 0.85)), 
-                              url('https://images.unsplash.com/photo-1594760469614-38686a6f6932?q=80&w=1920&auto=format&fit=crop');
+            background-color: #05050a; /* Fundo quase preto para contraste */
+            background-image: url('https://images.unsplash.com/photo-1605723517503-3cadb5818a0c?q=80&w=1920&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* Mantém o raio parado ao rolar a página */
-            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            animation: relampago-anim 8s infinite; /* Ciclo do relâmpago */
         }
 
-        h1, h3 { text-align: center; color: #5E22F3; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); }
+        /* Animação que cria o clarão */
+        @keyframes relampago-anim {
+            0%, 95%, 100% { filter: brightness(0.4) contrast(1); } /* Estado escuro normal */
+            96% { filter: brightness(3) contrast(1.5); } /* Primeiro Clarão */
+            97% { filter: brightness(0.8); }
+            98% { filter: brightness(4) contrast(2); } /* Segundo Clarão (mais forte) */
+            99% { filter: brightness(1.2); }
+        }
+
+        h1, h3 { text-align: center; color: #5E22F3; text-shadow: 0 0 15px rgba(255,255,255,0.4); }
         
-        /* Containers levemente transparentes para combinar com o fundo */
+        /* Containers com transparência para ver o fundo */
         .container { 
-            background-color: rgba(255, 255, 255, 0.9); 
+            background-color: rgba(255, 255, 255, 0.85); 
             padding: 20px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
             margin-bottom: 20px; 
-            backdrop-filter: blur(2px); /* Leve desfoque no fundo do container */
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        .secao-acao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background-color: rgba(255,255,255,0.7); }
+        .secao-acao { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: rgba(255,255,255,0.4); }
         .linha-input { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; justify-content: center; margin-bottom: 10px; }
-        select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; }
         
-        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: all 0.2s; }
-        button:hover { background-color: #4517b8; box-shadow: 0 0 10px rgba(94, 34, 243, 0.5); }
+        select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:hover { background-color: #4517b8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(94, 34, 243, 0.4); }
         
         .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: rgba(240, 240, 240, 0.8); border-radius: 5px; border: 1px dashed #5E22F3; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background-color: rgba(255,255,255,0.8); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: white; border-radius: 8px; overflow: hidden; }
         thead { background-color: #5E22F3; color: white; }
-        th, td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        th, td { padding: 10px; text-align: center; border: 1px solid #ddd; }
         
-        .btn-gerar { background-color: #28a745; width: 100%; padding: 15px; font-size: 18px; margin-top: 10px; border: none; border-radius: 8px; color: white; cursor: pointer; transition: background 0.2s; }
+        .btn-gerar { background-color: #28a745; width: 100%; padding: 15px; font-size: 18px; margin-top: 10px; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn-gerar:hover { background-color: #218838; }
         
-        footer { text-align:center; padding:15px; color:white; background-color: rgba(94, 34, 243, 0.9); margin-top: 30px; border-radius: 8px; }
+        footer { text-align:center; padding:15px; color:white; background-color: rgba(94, 34, 243, 0.9); margin-top: 30px; border-radius: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>Gerenciador de Equipe SAP</h1>
+    <h1>Gerenciador de Equipe SAP ⚡</h1>
 
     <div class="container">
         <h3>1. Cadastrar Novo Colaborador</h3>
@@ -71,11 +80,8 @@
         <h3>2. Definição da Equipe</h3>
         <div class="secao-acao">
             <div class="linha-input">
-                <div>
-                    <label>Quantidade de Pessoas:</label><br>
-                    <input type="number" id="qtdEquipe" min="1" placeholder="Ex: 3">
-                </div>
-                <button onclick="gerarCamposSelecao()">Gerar Campos de Seleção</button>
+                <input type="number" id="qtdEquipe" min="1" placeholder="Qtd Pessoas">
+                <button onclick="gerarCamposSelecao()">Gerar Campos</button>
             </div>
             <div id="areaSelecao" class="grid-selecao" style="display: none;"></div>
         </div>
@@ -85,17 +91,12 @@
         <h3>3. Ordem e Operações (0010 a 0090)</h3>
         <div class="secao-acao">
             <div class="linha-input">
-                <div>
-                    <label>Nº da Ordem:</label><br>
-                    <input type="number" id="numOrdem" placeholder="Digite a Ordem">
-                </div>
+                <input type="number" id="numOrdem" placeholder="Nº da Ordem">
                 <button onclick="addOperacao()">+ Adicionar Operação</button>
             </div>
             <table id="tabOperacoes">
                 <thead>
-                    <tr>
-                        <th>Operação</th><th>Cód.</th><th>Início</th><th>Fim</th><th>Ação</th>
-                    </tr>
+                    <tr><th>Operação</th><th>Cód.</th><th>Início</th><th>Fim</th><th>Ação</th></tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -105,15 +106,13 @@
     <button class="btn-gerar" onclick="processarFinal()">GERAR PLANILHA PARA ZPM</button>
 
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h2>Preview ZPM</h2>
-            <button style="background-color: #007bff; padding: 12px;" onclick="copiarZPM()">Copiar Dados para o SAP</button>
+            <button style="background-color: #007bff; padding: 12px; color: white; border:none; border-radius:5px;" onclick="copiarZPM()">Copiar para o SAP</button>
         </div>
         <table id="tabFinal">
             <thead>
-                <tr>
-                    <th>Ordem</th><th>Cód.</th><th>Número</th><th>Data Iní.</th><th>Hora Iní.</th><th>Data Fim</th><th>Hora Fim</th><th>Confirmação</th>
-                </tr>
+                <tr><th>Ordem</th><th>Cód.</th><th>Número</th><th>Data Iní.</th><th>Hora Iní.</th><th>Data Fim</th><th>Hora Fim</th><th>Confirmação</th></tr>
             </thead>
             <tbody></tbody>
         </table>
@@ -122,35 +121,22 @@
     <footer>Equipe Sinalização © 2025</footer>
 
 <script>
-    // Base de dados preservada v5
     const baseColab = [
-        {"nome":"ADRIANO","re":"59-01777","numero":"20579"},
-        {"nome":"ALEX","re":"59-02966","numero":"23097"},
-        {"nome":"BRUNO","re":"59-04951","numero":"19540"},
-        {"nome":"CLAUDEMIR","re":"59-01651","numero":"20651"},
-        {"nome":"EUDES","re":"59-03110","numero":""},
-        {"nome":"GILMERSON","re":"59-02315","numero":"24056"},
-        {"nome":"GRACINO","re":"59-00447","numero":"20806"},
-        {"nome":"GREGÓRIO","re":"59-02738","numero":""},
-        {"nome":"IAGO","re":"59-02975","numero":"23584"},
-        {"nome":"JAILSON","re":"59-03141","numero":"23924"},
-        {"nome":"JONE","re":"59-02967","numero":"24207"},
-        {"nome":"JUNIOR","re":"59-01825","numero":"20903"},
-        {"nome":"KAMILYN","re":"59-04350","numero":"24587"},
-        {"nome":"LEANDRO","re":"59-03077","numero":"14791"},
-        {"nome":"LUCIANO","re":"59-03444","numero":"23090"},
-        {"nome":"MARCELO","re":"59-02318","numero":"23672"},
-        {"nome":"PAULO","re":"59-01797","numero":"21031"},
-        {"nome":"RODRIGO","re":"59-02849","numero":""},
-        {"nome":"RUTEMBERG","re":"59-00332","numero":"21096"},
-        {"nome":"SIDNEI","re":"59-03370","numero":"24520"},
-        {"nome":"VAGNER","re":"59-04500","numero":"24932"},
-        {"nome":"VALTER","re":"59-00793","numero":"21131"},
-        {"nome":"WILLIAM FAUSTO","re":"59-04340","numero":"24435"},
-        {"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589"}
+        {"nome":"ADRIANO","re":"59-01777","numero":"20579"},{"nome":"ALEX","re":"59-02966","numero":"23097"},
+        {"nome":"BRUNO","re":"59-04951","numero":"19540"},{"nome":"CLAUDEMIR","re":"59-01651","numero":"20651"},
+        {"nome":"EUDES","re":"59-03110","numero":""},{"nome":"GILMERSON","re":"59-02315","numero":"24056"},
+        {"nome":"GRACINO","re":"59-00447","numero":"20806"},{"nome":"GREGÓRIO","re":"59-02738","numero":""},
+        {"nome":"IAGO","re":"59-02975","numero":"23584"},{"nome":"JAILSON","re":"59-03141","numero":"23924"},
+        {"nome":"JONE","re":"59-02967","numero":"24207"},{"nome":"JUNIOR","re":"59-01825","numero":"20903"},
+        {"nome":"KAMILYN","re":"59-04350","numero":"24587"},{"nome":"LEANDRO","re":"59-03077","numero":"14791"},
+        {"nome":"LUCIANO","re":"59-03444","numero":"23090"},{"nome":"MARCELO","re":"59-02318","numero":"23672"},
+        {"nome":"PAULO","re":"59-01797","numero":"21031"},{"nome":"RODRIGO","re":"59-02849","numero":""},
+        {"nome":"RUTEMBERG","re":"59-00332","numero":"21096"},{"nome":"SIDNEI","re":"59-03370","numero":"24520"},
+        {"nome":"VAGNER","re":"59-04500","numero":"24932"},{"nome":"VALTER","re":"59-00793","numero":"21131"},
+        {"nome":"WILLIAM FAUSTO","re":"59-04340","numero":"24435"},{"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589"}
     ];
 
-    let db = JSON.parse(localStorage.getItem('db_sinaliza_v5')) || baseColab;
+    let db = JSON.parse(localStorage.getItem('db_sinaliza_v6')) || baseColab;
 
     const todasAsOps = [
         {n: "Preparação", c: "0010"}, {n: "Deslocamento", c: "0020"},
@@ -166,8 +152,7 @@
         const s = document.getElementById('cadSAP').value;
         if(!n || !r) return alert("Nome e RE são obrigatórios.");
         db.push({nome: n, re: r, numero: s});
-        localStorage.setItem('db_sinaliza_v5', JSON.stringify(db));
-        alert("Colaborador salvo!");
+        localStorage.setItem('db_sinaliza_v6', JSON.stringify(db));
         location.reload();
     }
 
@@ -175,10 +160,8 @@
         const qtd = document.getElementById('qtdEquipe').value;
         const area = document.getElementById('areaSelecao');
         if(qtd < 1) return;
-        area.innerHTML = "";
-        area.style.display = "grid";
+        area.innerHTML = ""; area.style.display = "grid";
         db.sort((a,b) => a.nome.localeCompare(b.nome));
-
         for(let i=1; i<=qtd; i++) {
             let opts = `<option value="">-- Selecionar Colaborador ${i} --</option>`;
             db.forEach(c => { opts += `<option value="${c.re}">${c.nome} (${c.re})</option>`; });
@@ -193,13 +176,12 @@
         const tr = document.createElement("tr");
         let opsHTML = todasAsOps.map(o => `<option value="${o.c}">${o.n}</option>`).join('');
         let hoje = new Date().toISOString().slice(0,10);
-
         tr.innerHTML = `
             <td><select class="op-select">${opsHTML}</select></td>
             <td class="op-cod-cell">${todasAsOps[0].c}</td>
             <td><input type="date" value="${hoje}"> <input type="time"></td>
             <td><input type="date" value="${hoje}"> <input type="time"></td>
-            <td><button onclick="this.closest('tr').remove()" style="background:#d9534f">Remover</button></td>
+            <td><button onclick="this.closest('tr').remove()" style="background:#d9534f">X</button></td>
             <td style="display:none" class="hidden-ordem">${ord}</td>
         `;
         const sel = tr.querySelector('.op-select');
@@ -212,9 +194,7 @@
         resBody.innerHTML = "";
         const selecionados = Array.from(document.querySelectorAll('.sel-re')).map(s => s.value).filter(v => v !== "");
         const rows = document.querySelectorAll("#tabOperacoes tbody tr");
-
         if(selecionados.length === 0 || rows.length === 0) return alert("Verifique equipe e operações.");
-
         rows.forEach(row => {
             const ordem = row.querySelector('.hidden-ordem').textContent;
             const cod = row.querySelector('.op-cod-cell').textContent;
@@ -222,7 +202,6 @@
             const dtFim = row.querySelectorAll('input[type="date"]')[1].value.split("-").reverse().join(".");
             const hrIni = row.querySelectorAll('input[type="time"]')[0].value || "00:00";
             const hrFim = row.querySelectorAll('input[type="time"]')[1].value || "00:00";
-
             selecionados.forEach(re => {
                 const p = db.find(c => c.re === re);
                 const tr = document.createElement("tr");
@@ -235,12 +214,11 @@
 
     function copiarZPM() {
         let texto = "";
-        const linhas = document.querySelectorAll("#tabFinal tbody tr");
-        linhas.forEach(tr => {
+        document.querySelectorAll("#tabFinal tbody tr").forEach(tr => {
             const c = Array.from(tr.querySelectorAll("td")).map(td => td.textContent.trim());
             texto += `${c[0]}\t${c[1]}${"\t".repeat(8)}${c[2]}\t${c[3]}\t${c[4]}\t${c[5]}\t${c[6]}\t\t${c[7]}\n`;
         });
-        navigator.clipboard.writeText(texto).then(() => alert("Copiado!"));
+        navigator.clipboard.writeText(texto).then(() => alert("Copiado com sucesso para a área de transferência!"));
     }
 </script>
 </body>
