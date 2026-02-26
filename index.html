@@ -1,124 +1,151 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador SAP - Subestação Edition</title>
+    <title>Gerenciador SAP - Pro Edition</title>
     <style>
-        /* Fundo com imagem de Subestação e efeito de Relâmpago */
+        :root {
+            --primary-color: #5E22F3;
+            --bg-color: #f4f7f9;
+            --text-color: #333333;
+            --container-bg: #ffffff;
+        }
+
         body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            margin: 20px; 
-            color: #333; 
-            background-color: #e5e7eb;
-            /* Link de imagem de subestação em alta resolução */
-            background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), 
-                              url('https://images.unsplash.com/photo-1558444479-c84826027ec2?auto=format&fit=crop&q=80&w=1920');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            animation: relampago-subestacao 10s infinite;
-        }
-
-        /* Animação que cria o clarão de um trovão */
-        @keyframes relampago-subestacao {
-            0%, 94%, 100% { filter: brightness(1) contrast(1); }
-            95% { filter: brightness(2.2) contrast(1.1); }
-            97% { filter: brightness(1.2); }
-            98% { filter: brightness(2.5) contrast(1.3); }
-        }
-
-        h1, h3 { text-align: center; color: #5E22F3; text-shadow: 1px 1px 2px white; }
-        
-        /* Containers com transparência muito reduzida para facilitar a leitura */
-        .container { 
-            background-color: rgba(255, 255, 255, 0.96); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
             padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            margin-bottom: 20px; 
-            border: 1px solid #ddd;
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            transition: all 0.3s ease;
         }
 
-        .secao-acao { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fff; }
-        .linha-input { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; justify-content: center; margin-bottom: 10px; }
+        h1, h2, h3 { color: var(--primary-color); text-align: center; }
+
+        /* Menu de Abas */
+        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { 
+            padding: 10px 20px; cursor: pointer; border: none; 
+            background: #ddd; border-radius: 5px; font-weight: bold; 
+        }
+        .tab-btn.active { background: var(--primary-color); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .container { 
+            max-width: 900px; margin: 0 auto 20px auto;
+            background: var(--container-bg); padding: 20px; 
+            border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+
+        .linha-input { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; }
+        input, select, button { padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
         
-        select, input, button { padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #5E22F3; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background-color: #4517b8; }
-        
-        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 5px; border: 1px dashed #5E22F3; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: white; }
-        thead { background-color: #5E22F3; color: white; }
-        th, td { padding: 10px; text-align: center; border: 1px solid #eee; }
-        
-        .btn-gerar { background-color: #28a745; width: 100%; padding: 16px; font-size: 18px; margin-top: 10px; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        footer { text-align:center; padding:15px; color:white; background-color: #5E22F3; margin-top: 30px; border-radius: 8px; }
+        button { 
+            background-color: var(--primary-color); color: white; 
+            border: none; cursor: pointer; font-weight: bold; 
+        }
+        button:hover { opacity: 0.9; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; font-size: 14px; }
+        thead { background: var(--primary-color); color: white; }
+
+        /* Estilo Configurações */
+        .config-item { margin-bottom: 15px; padding: 10px; border-bottom: 1px solid #eee; }
+        .config-item label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .btn-danger { background-color: #d9534f; }
+
+        footer { text-align: center; margin-top: 40px; font-size: 12px; opacity: 0.6; }
     </style>
 </head>
 <body>
 
-    <h1>Gerenciador de Equipe SAP ⚡</h1>
+    <h1>Sistema de Apoio SAP ⚡</h1>
 
-    <div class="container">
-        <h3>1. Cadastrar Novo Colaborador</h3>
-        <div class="secao-acao">
-            <div class="linha-input">
-                <input type="text" id="cadNome" placeholder="Nome Completo">
-                <input type="text" id="cadRE" placeholder="RE (Ex: 59-0000)">
-                <input type="text" id="cadSAP" placeholder="Nº SAP">
-                <button onclick="salvarColaborador()">Salvar</button>
-            </div>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('operacional')">Operacional</button>
+        <button class="tab-btn" onclick="openTab('configuracoes')">Configurações & Banco</button>
     </div>
 
-    <div class="container">
-        <h3>2. Definição da Equipe</h3>
-        <div class="secao-acao">
-            <div class="linha-input">
-                <input type="number" id="qtdEquipe" min="1" placeholder="Qtd Pessoas">
-                <button onclick="gerarCamposSelecao()">Gerar Campos</button>
-            </div>
-            <div id="areaSelecao" class="grid-selecao" style="display: none;"></div>
-        </div>
-    </div>
-
-    <div class="container">
-        <h3>3. Ordem e Operações</h3>
-        <div class="secao-acao">
+    <div id="operacional" class="tab-content active">
+        <div class="container">
+            <h3>1. Equipe e Ordem</h3>
             <div class="linha-input">
                 <input type="number" id="numOrdem" placeholder="Nº da Ordem">
-                <button onclick="addOperacao()">+ Adicionar Operação</button>
+                <input type="number" id="qtdEquipe" min="1" placeholder="Qtd de Pessoas">
+                <button onclick="gerarCamposSelecao()">Definir Equipe</button>
+            </div>
+            <div id="areaSelecao" class="linha-input" style="margin-top:10px;"></div>
+        </div>
+
+        <div class="container">
+            <h3>2. Lançar Operações</h3>
+            <div class="linha-input">
+                <button onclick="addOperacao()">+ Adicionar Operação (0010-0090)</button>
             </div>
             <table id="tabOperacoes">
                 <thead>
-                    <tr><th>Operação</th><th>Cód.</th><th>Início</th><th>Fim</th><th>Ação</th></tr>
+                    <tr><th>Operação</th><th>Início</th><th>Fim</th><th>Ações</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button onclick="processarFinal()" style="width:100%; margin-top:20px; background:#28a745; padding:15px;">GERAR DADOS PARA SAP</button>
+        </div>
+
+        <div class="container">
+            <h3>3. Resultado (ZPM)</h3>
+            <table id="tabFinal">
+                <thead>
+                    <tr><th>Ordem</th><th>Oper.</th><th>Nº SAP</th><th>Início</th><th>Fim</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button onclick="copiarZPM()" style="margin-top:10px; background:#007bff;">Copiar Todos os Dados</button>
+        </div>
+    </div>
+
+    <div id="configuracoes" class="tab-content">
+        <div class="container">
+            <h3>Personalização de Cores</h3>
+            <div class="linha-input">
+                <div class="config-item">
+                    <label>Cor Principal (Botões/Títulos):</label>
+                    <input type="color" id="colorPrimary" value="#5E22F3" onchange="updateColors()">
+                </div>
+                <div class="config-item">
+                    <label>Cor do Fundo:</label>
+                    <input type="color" id="colorBg" value="#f4f7f9" onchange="updateColors()">
+                </div>
+                <div class="config-item">
+                    <label>Cor do Texto:</label>
+                    <input type="color" id="colorText" value="#333333" onchange="updateColors()">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <h3>Gerenciar Colaboradores</h3>
+            <div class="linha-input" style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+                <input type="text" id="cadNome" placeholder="Nome">
+                <input type="text" id="cadRE" placeholder="RE">
+                <input type="text" id="cadSAP" placeholder="Nº SAP">
+                <button onclick="salvarColaborador()">+ Cadastrar</button>
+            </div>
+            <table id="tabGerenciarBanco">
+                <thead>
+                    <tr><th>Nome</th><th>RE</th><th>SAP</th><th>Ação</th></tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
     </div>
 
-    <button class="btn-gerar" onclick="processarFinal()">GERAR PLANILHA FINAL</button>
-
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h2>Preview ZPM</h2>
-            <button style="background-color: #007bff; padding: 10px; color: white; border:none; border-radius:5px;" onclick="copiarZPM()">Copiar Dados</button>
-        </div>
-        <table id="tabFinal">
-            <thead>
-                <tr><th>Ordem</th><th>Cód.</th><th>Número</th><th>Data Iní.</th><th>Hora Iní.</th><th>Data Fim</th><th>Hora Fim</th><th>Confirmação</th></tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <footer>Equipe Sinalização © 2026</footer>
+    <footer>Gerenciador de Equipe SAP - Versão 7.0</footer>
 
 <script>
-    // Base de dados preservada
+    // Banco de dados inicial
     const baseColab = [
         {"nome":"ADRIANO","re":"59-01777","numero":"20579"},{"nome":"ALEX","re":"59-02966","numero":"23097"},
         {"nome":"BRUNO","re":"59-04951","numero":"19540"},{"nome":"CLAUDEMIR","re":"59-01651","numero":"20651"},
@@ -134,7 +161,7 @@
         {"nome":"WILLIAM FAUSTO","re":"59-04340","numero":"24435"},{"nome":"WILLIAN ALMEIDA","re":"59-03331","numero":"22589"}
     ];
 
-    let db = JSON.parse(localStorage.getItem('db_sinaliza_v_final')) || baseColab;
+    let db = JSON.parse(localStorage.getItem('db_sap_v7')) || baseColab;
 
     const todasAsOps = [
         {n: "Preparação", c: "0010"}, {n: "Deslocamento", c: "0020"},
@@ -144,79 +171,117 @@
         {n: "Execução 0090", c: "0090"}
     ];
 
-    function salvarColaborador() {
-        const n = document.getElementById('cadNome').value.toUpperCase();
-        const r = document.getElementById('cadRE').value;
-        const s = document.getElementById('cadSAP').value;
-        if(!n || !r) return alert("Preencha Nome e RE.");
-        db.push({nome: n, re: r, numero: s});
-        localStorage.setItem('db_sinaliza_v_final', JSON.stringify(db));
-        location.reload();
+    // Funções de Interface
+    function openTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+        if(tabName === 'configuracoes') renderGerenciarBanco();
     }
 
+    function updateColors() {
+        const p = document.getElementById('colorPrimary').value;
+        const b = document.getElementById('colorBg').value;
+        const t = document.getElementById('colorText').value;
+        document.documentElement.style.setProperty('--primary-color', p);
+        document.documentElement.style.setProperty('--bg-color', b);
+        document.documentElement.style.setProperty('--text-color', t);
+    }
+
+    // Gerenciamento de Banco
+    function salvarColaborador() {
+        const nome = document.getElementById('cadNome').value.toUpperCase();
+        const re = document.getElementById('cadRE').value;
+        const sap = document.getElementById('cadSAP').value;
+        if(!nome || !re) return alert("Preencha ao menos Nome e RE");
+        db.push({nome, re, numero: sap});
+        localStorage.setItem('db_sap_v7', JSON.stringify(db));
+        renderGerenciarBanco();
+        alert("Cadastrado com sucesso!");
+    }
+
+    function excluirColaborador(index) {
+        if(confirm("Deseja realmente excluir este colaborador?")) {
+            db.splice(index, 1);
+            localStorage.setItem('db_sap_v7', JSON.stringify(db));
+            renderGerenciarBanco();
+        }
+    }
+
+    function renderGerenciarBanco() {
+        const tbody = document.querySelector("#tabGerenciarBanco tbody");
+        tbody.innerHTML = "";
+        db.sort((a,b) => a.nome.localeCompare(b.nome)).forEach((colab, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${colab.nome}</td><td>${colab.re}</td><td>${colab.numero}</td>
+                <td><button class="btn-danger" onclick="excluirColaborador(${index})">Excluir</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Lógica Operacional
     function gerarCamposSelecao() {
         const qtd = document.getElementById('qtdEquipe').value;
         const area = document.getElementById('areaSelecao');
-        if(qtd < 1) return;
-        area.innerHTML = ""; area.style.display = "grid";
+        area.innerHTML = "";
         db.sort((a,b) => a.nome.localeCompare(b.nome));
-        for(let i=1; i<=qtd; i++) {
-            let opts = `<option value="">-- Selecionar ${i} --</option>`;
-            db.forEach(c => { opts += `<option value="${c.re}">${c.nome} (${c.re})</option>`; });
-            area.innerHTML += `<div><select class="sel-re">${opts}</select></div>`;
+        for(let i=0; i<qtd; i++) {
+            let select = `<select class="sel-re"><option value="">-- Selecionar --</option>`;
+            db.forEach(c => select += `<option value="${c.re}">${c.nome}</option>`);
+            select += `</select>`;
+            area.innerHTML += select;
         }
     }
 
     function addOperacao() {
-        const ord = document.getElementById('numOrdem').value;
-        if(!ord) return alert("Informe a Ordem.");
         const tbody = document.querySelector("#tabOperacoes tbody");
         const tr = document.createElement("tr");
-        let opsHTML = todasAsOps.map(o => `<option value="${o.c}">${o.n}</option>`).join('');
+        let opsOptions = todasAsOps.map(o => `<option value="${o.c}">${o.n} (${o.c})</option>`).join('');
         let hoje = new Date().toISOString().slice(0,10);
         tr.innerHTML = `
-            <td><select class="op-select">${opsHTML}</select></td>
-            <td class="op-cod-cell">${todasAsOps[0].c}</td>
+            <td><select class="op-cod">${opsOptions}</select></td>
             <td><input type="date" value="${hoje}"> <input type="time"></td>
             <td><input type="date" value="${hoje}"> <input type="time"></td>
-            <td><button onclick="this.closest('tr').remove()" style="background:#d9534f">X</button></td>
-            <td style="display:none" class="hidden-ordem">${ord}</td>
+            <td><button class="btn-danger" onclick="this.closest('tr').remove()">X</button></td>
         `;
-        const sel = tr.querySelector('.op-select');
-        sel.onchange = () => tr.querySelector('.op-cod-cell').textContent = sel.value;
         tbody.appendChild(tr);
     }
 
     function processarFinal() {
         const resBody = document.querySelector("#tabFinal tbody");
         resBody.innerHTML = "";
+        const ordem = document.getElementById('numOrdem').value;
         const selecionados = Array.from(document.querySelectorAll('.sel-re')).map(s => s.value).filter(v => v !== "");
         const rows = document.querySelectorAll("#tabOperacoes tbody tr");
-        if(selecionados.length === 0 || rows.length === 0) return alert("Verifique equipe e operações.");
+
+        if(!ordem || selecionados.length === 0) return alert("Preencha a ordem e a equipe.");
+
         rows.forEach(row => {
-            const ordem = row.querySelector('.hidden-ordem').textContent;
-            const cod = row.querySelector('.op-cod-cell').textContent;
+            const cod = row.querySelector('.op-cod').value;
             const dtIni = row.querySelectorAll('input[type="date"]')[0].value.split("-").reverse().join(".");
-            const dtFim = row.querySelectorAll('input[type="date"]')[1].value.split("-").reverse().join(".");
             const hrIni = row.querySelectorAll('input[type="time"]')[0].value || "00:00";
+            const dtFim = row.querySelectorAll('input[type="date"]')[1].value.split("-").reverse().join(".");
             const hrFim = row.querySelectorAll('input[type="time"]')[1].value || "00:00";
+
             selecionados.forEach(re => {
                 const p = db.find(c => c.re === re);
                 const tr = document.createElement("tr");
-                let txtConf = p.numero === "" ? `UNKNOWN: ${p.nome} ${p.re}` : "";
-                tr.innerHTML = `<td>${ordem}</td><td>${cod}</td><td>${p.numero}</td><td>${dtIni}</td><td>${hrIni}:00</td><td>${dtFim}</td><td>${hrFim}:00</td><td>${txtConf}</td>`;
+                tr.innerHTML = `<td>${ordem}</td><td>${cod}</td><td>${p.numero}</td><td>${dtIni} ${hrIni}</td><td>${dtFim} ${hrFim}</td>`;
                 resBody.appendChild(tr);
             });
         });
     }
 
     function copiarZPM() {
-        let texto = "";
+        let txt = "";
         document.querySelectorAll("#tabFinal tbody tr").forEach(tr => {
-            const c = Array.from(tr.querySelectorAll("td")).map(td => td.textContent.trim());
-            texto += `${c[0]}\t${c[1]}${"\t".repeat(8)}${c[2]}\t${c[3]}\t${c[4]}\t${c[5]}\t${c[6]}\t\t${c[7]}\n`;
+            const tds = tr.querySelectorAll("td");
+            txt += `${tds[0].textContent}\t${tds[1].textContent}${"\t".repeat(8)}${tds[2].textContent}\t${tds[3].textContent}\t${tds[4].textContent}\n`;
         });
-        navigator.clipboard.writeText(texto).then(() => alert("Copiado!"));
+        navigator.clipboard.writeText(txt).then(() => alert("Copiado para o SAP!"));
     }
 </script>
 </body>
